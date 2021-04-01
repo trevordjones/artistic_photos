@@ -1,7 +1,16 @@
 __version__ = '0.1.0'
 
+from dotenv import load_dotenv
 from flask import Flask
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
 import os
+
+load_dotenv()
+FLASK_ENV = os.getenv('FLASK_ENV')
+PG_URL = os.getenv('PGURL')
+
+db = SQLAlchemy()
 
 
 def create_app(test_config=None):
@@ -11,6 +20,11 @@ def create_app(test_config=None):
         SECRET_KEY='dev',
         DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
         )
+
+    app.config['DEBUG'] = FLASK_ENV != 'production'
+    app.config['SQLALCHEMY_DATABASE_URI'] = PG_URL
+
+    db.init_app(app)
 
     if test_config is None:
         # load the instance config, if it exists, when not testing

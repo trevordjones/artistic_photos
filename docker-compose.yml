@@ -1,0 +1,16 @@
+version: "3.9"
+services:
+  database:
+    image: 'postgres'
+    environment:
+      POSTGRES_DB: ${PGDATABASE}
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_PASSWORD: ${PGPASS}
+      POSTGRES_USER: ${PGUSER}
+    ports:
+      - ${PGPORT}:5432
+    volumes:
+      - database-data:/var/lib/postgresql/data/
+
+volumes:
+ database-data:
