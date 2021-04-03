@@ -1,0 +1,3 @@
+#!/bin/bash
+
+docker exec -it artistic_photos_database_1 psql "$@"
