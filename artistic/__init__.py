@@ -25,6 +25,8 @@ def create_app(test_config=None):
     app.config['SQLALCHEMY_DATABASE_URI'] = PG_URL
 
     db.init_app(app)
+    migrate = Migrate(app, db) # this variable needed for Flask-Migrate
+    from artistic.models import User
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
