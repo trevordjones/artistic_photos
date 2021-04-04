@@ -1,7 +1,7 @@
 __version__ = '0.1.0'
 
 from dotenv import load_dotenv
-from flask import Flask
+from flask import Flask, render_template
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 import os
@@ -42,8 +42,8 @@ def create_app(test_config=None):
         pass
 
     # a simple page that says hello
-    @app.route('/hello')
-    def hello():
-        return 'Hello, World!'
+    @app.route('/', methods=['GET'])
+    def main():
+        return render_template('application.html', page='home/index')
 
     return app
