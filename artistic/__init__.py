@@ -1,7 +1,7 @@
 __version__ = '0.1.0'
 
 from dotenv import load_dotenv
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, request, url_for
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 import os
@@ -9,6 +9,7 @@ import os
 load_dotenv()
 FLASK_ENV = os.getenv('FLASK_ENV')
 PG_URL = os.getenv('PGURL')
+APPLICATION_PAGE = 'application.html'
 
 db = SQLAlchemy()
 
@@ -26,7 +27,7 @@ def create_app(test_config=None):
 
     db.init_app(app)
     migrate = Migrate(app, db) # this variable needed for Flask-Migrate
-    from artistic.models import User
+    from artistic.models import User, Image
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
@@ -42,8 +43,19 @@ def create_app(test_config=None):
         pass
 
     # a simple page that says hello
-    @app.route('/', methods=['GET'])
+    @app.route('/', methods=['GET', 'POST'])
     def main():
-        return render_template('application.html', page='home/index')
+        if request.method == 'GET':
+            return render_template(APPLICATION_PAGE, page='home/index')
+        else:
+            try:
+                for key in request.files:
+                    image = Image.upload_to_gcp(request.files[key], key)
+                    with app.app_context():
+                        image.save()
+            except Exception as e:
+                print(e)
+
+            return redirect(url_for('main'))
 
     return app
