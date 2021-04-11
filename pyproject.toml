@@ -16,6 +16,7 @@ init = "^0.1.0"
 Flask-Script = "^2.0.6"
 psycopg2 = "^2.8.6"
 google-cloud-storage = "^1.37.0"
+google-cloud-notebooks = "^0.1.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
