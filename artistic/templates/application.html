@@ -1,1 +1,14 @@
-{% include page + '.html' %}
+<!DOCTYPE html>
+<html>
+  <head>
+    {% block head %}
+    <link />
+    <title>{% block title %}{% endblock %}</title>
+    {% endblock %}
+  </head>
+  <body>
+    <div id="content">
+      {% block content %}{% endblock %}
+    </div>
+  </body>
+</html>

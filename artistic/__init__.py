@@ -11,7 +11,6 @@ from pathlib import Path
 load_dotenv()
 FLASK_ENV = os.getenv('FLASK_ENV')
 PG_URL = os.getenv('PGURL')
-APPLICATION_PAGE = 'application.html'
 ROOT = Path(__file__).parent
 
 db = SQLAlchemy()
@@ -53,7 +52,7 @@ def create_app(test_config=None):
         from artistic.kaggle_script import create_kaggle_script
 
         if request.method == 'GET':
-            return render_template(APPLICATION_PAGE, page='home/index')
+            return render_template('home/index.html')
         else:
             image_name = binascii.b2a_hex(os.urandom(5)).decode('utf-8')
             names = {'content': '', 'style': ''}
