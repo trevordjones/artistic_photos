@@ -4,10 +4,21 @@
 {% block content %}
 
 <form id="uploadbanner" enctype="multipart/form-data" method="post" action="#">
-   <input id="fileupload" name="content" type="file" />
 
-   <input id="fileupload" name="style" type="file" />
-   <input type="submit" value="submit" id="submit" />
+  <div class="form-group row">
+    <label class="col-sm-12 col-sm-label">Starting Photo</label>
+    <div class="col-sm-4">
+      <input id="fileupload" class="form-control" name="content" type="file" />
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <label class="col-sm-12 col-sm-label">Style Photo</label>
+    <div class="col-sm-4">
+      <input id="fileupload" class="form-control" name="style" type="file" />
+    </div>
+  </div>
+  <input type="submit" value="Submit" id="submit" class="btn btn-primary" />
 </form>
 
 {% endblock %}
