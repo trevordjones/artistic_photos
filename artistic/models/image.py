@@ -3,14 +3,14 @@ from google.cloud import storage
 import os
 from pathlib import Path
 
-from artistic import db
+from artistic.models.base import Base, db
 
 ROOT = Path(__file__).parent.parent
 FILE_PATH = ROOT.joinpath('temp')
 STORAGE_BUCKET = os.getenv('STORAGE_BUCKET')
 
 
-class Image(db.Model):
+class Image(Base):
     __tablename__ = 'images'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer)
