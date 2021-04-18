@@ -3,9 +3,17 @@ __version__ = '0.1.0'
 import binascii
 from dotenv import load_dotenv
 from flask import Flask, redirect, render_template, request, url_for
+from flask_login import (
+    LoginManager,
+    current_user,
+    login_required,
+    login_user,
+    logout_user,
+)
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 import os
+from passlib.hash import sha256_crypt
 from pathlib import Path
 
 load_dotenv()
@@ -28,6 +36,11 @@ def create_app(test_config=None):
     app.config['SQLALCHEMY_DATABASE_URI'] = PG_URL
 
     db.init_app(app)
+
+    login_manager = LoginManager()
+    login_manager.init_app(app)
+
+
     migrate = Migrate(app, db) # this variable needed for Flask-Migrate
     from artistic.models import Image, User
 
@@ -44,8 +57,16 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    # a simple page that says hello
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.query.get(user_id)
+
+    @login_manager.unauthorized_handler
+    def unauthorized():
+        return redirect(url_for('login'))
+
     @app.route('/', methods=['GET', 'POST'])
+    @login_required
     def main():
         import subprocess
 
@@ -70,5 +91,30 @@ def create_app(test_config=None):
                 print(e)
 
             return redirect(url_for('main'))
+
+    @app.route('/login', methods=['GET', 'POST'])
+    def login():
+        if current_user.is_authenticated:
+            return redirect(url_for('main'))
+
+        if request.method == 'GET':
+            return render_template('home/login.html')
+
+        user = User.query.filter_by(email=request.form['email']).first()
+        if user:
+            password = user.password
+            if sha256_crypt.verify(request.form['password'], user.password):
+                user.authenticated = True
+                db.session.add(user)
+                db.session.commit()
+                login_user(user, remember=True)
+                return redirect(url_for('main'))
+        return render_template('home/login.html')
+
+    @app.route('/logout', methods=['POST'])
+    def logout():
+        logout_user()
+        return redirect(url_for('login'))
+
 
     return app

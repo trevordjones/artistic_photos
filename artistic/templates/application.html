@@ -9,7 +9,13 @@
   <body>
   <nav class="navbar sticky-top navbar-dark bg-dark">
     <a class="navbar-brand" href="#">Artistic Photos</a>
-    <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Login</button>
+    {% if current_user.is_authenticated %}
+      <form action="/logout" method="post">
+        <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Logout</button>
+      </form>
+    {% else %}
+        <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Login</button>
+    {% endif %}
   </nav>
     <div id="content">
       <div class="container">

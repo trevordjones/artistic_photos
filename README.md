@@ -65,3 +65,15 @@ poetry run flask db upgrade # this actually runs the migration and updates the d
 # If you need to undo your migration
 poetry run flask db downgrade
 ```
+
+## Logging in
+Once the database is setup, you'll be able to login. You'll first need to create a user manually as there is no sign up form (we don't want people (probably bots) signing up). First enter the Python shell:
+
+```bash
+poetry run flask shell
+```
+
+And then run this code:
+```python
+User().create_new_user(email='email@example.com', password='password')
+```
