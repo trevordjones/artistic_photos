@@ -13,16 +13,15 @@ from flask_login import (
 from flask_migrate import Migrate
 import os
 from pathlib import Path
+
+from artistic.db import db
 from artistic.views import auth_bp, home_bp
 from artistic.views.auth import login_manager
-from artistic.db import db
-
 
 load_dotenv()
 FLASK_ENV = os.getenv('FLASK_ENV')
 PG_URL = os.getenv('PGURL')
 ROOT = Path(__file__).parent
-
 
 
 def create_app(test_config=None):

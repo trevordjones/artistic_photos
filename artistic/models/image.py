@@ -3,8 +3,8 @@ from google.cloud import storage
 import os
 from pathlib import Path
 
-from artistic.models.base import Base
 from artistic.db import db
+from artistic.models.base import Base
 
 ROOT = Path(__file__).parent.parent
 FILE_PATH = ROOT.joinpath('temp')
