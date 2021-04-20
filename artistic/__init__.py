@@ -12,9 +12,11 @@ from flask_login import (
 )
 from flask_migrate import Migrate
 import os
-from passlib.hash import sha256_crypt
 from pathlib import Path
+from artistic.views import auth_bp, home_bp
+from artistic.views.auth import login_manager
 from artistic.db import db
+
 
 load_dotenv()
 FLASK_ENV = os.getenv('FLASK_ENV')
@@ -36,9 +38,7 @@ def create_app(test_config=None):
 
     db.init_app(app)
 
-    login_manager = LoginManager()
     login_manager.init_app(app)
-
 
     migrate = Migrate(app, db) # this variable needed for Flask-Migrate
     from artistic.models import Image, User
@@ -56,64 +56,7 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    @login_manager.user_loader
-    def load_user(user_id):
-        return User.query.get(user_id)
-
-    @login_manager.unauthorized_handler
-    def unauthorized():
-        return redirect(url_for('login'))
-
-    @app.route('/', methods=['GET', 'POST'])
-    @login_required
-    def main():
-        import subprocess
-
-        from artistic.kaggle_script import create_kaggle_script
-
-        if request.method == 'GET':
-            return render_template('home/index.html')
-        else:
-            image_name = binascii.b2a_hex(os.urandom(5)).decode('utf-8')
-            names = {'content': '', 'style': ''}
-            try:
-                for key in request.files:
-                    image = Image.upload_to_gcp(request.files[key], key, image_name)
-                    names[key] = image.source_name
-                    with app.app_context():
-                        image.save()
-                create_kaggle_script(names['content'], names['style'], 'random')
-                subprocess.run([f'kaggle kernels push -p {ROOT.joinpath("temp")}/'], shell=True)
-                os.remove(ROOT.joinpath('temp/nst.py'), missing_ok=True)
-                os.remove(ROOT.joinpath('temp/kernel-metadata.json'), missing_ok=True)
-            except Exception as e:
-                print(e)
-
-            return redirect(url_for('main'))
-
-    @app.route('/login', methods=['GET', 'POST'])
-    def login():
-        if current_user.is_authenticated:
-            return redirect(url_for('main'))
-
-        if request.method == 'GET':
-            return render_template('home/login.html')
-
-        user = User.query.filter_by(email=request.form['email']).first()
-        if user:
-            password = user.password
-            if sha256_crypt.verify(request.form['password'], user.password):
-                user.authenticated = True
-                db.session.add(user)
-                db.session.commit()
-                login_user(user, remember=True)
-                return redirect(url_for('main'))
-        return render_template('home/login.html')
-
-    @app.route('/logout', methods=['POST'])
-    def logout():
-        logout_user()
-        return redirect(url_for('login'))
-
+    app.register_blueprint(auth_bp)
+    app.register_blueprint(home_bp)
 
     return app
