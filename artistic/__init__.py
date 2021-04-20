@@ -11,17 +11,16 @@ from flask_login import (
     logout_user,
 )
 from flask_migrate import Migrate
-from flask_sqlalchemy import SQLAlchemy
 import os
 from passlib.hash import sha256_crypt
 from pathlib import Path
+from artistic.db import db
 
 load_dotenv()
 FLASK_ENV = os.getenv('FLASK_ENV')
 PG_URL = os.getenv('PGURL')
 ROOT = Path(__file__).parent
 
-db = SQLAlchemy()
 
 
 def create_app(test_config=None):

@@ -2,7 +2,8 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from passlib.hash import sha256_crypt
 
-from artistic.models.base import Base, db
+from artistic.models.base import Base
+from artistic.db import db
 
 
 class User(Base):

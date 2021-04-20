@@ -1,4 +1,4 @@
-from artistic import db as db
+from artistic.db import db
 
 
 class Base(db.Model):
