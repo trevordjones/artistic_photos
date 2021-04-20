@@ -15,8 +15,9 @@ import os
 from pathlib import Path
 
 from artistic.db import db
-from artistic.views import auth_bp, home_bp
 from artistic.views.auth import login_manager
+from artistic.routes import routes
+
 
 load_dotenv()
 FLASK_ENV = os.getenv('FLASK_ENV')
@@ -55,7 +56,6 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    app.register_blueprint(auth_bp)
-    app.register_blueprint(home_bp)
+    routes(app)
 
     return app
