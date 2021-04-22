@@ -2,7 +2,6 @@ import binascii
 from google.cloud import storage
 import os
 from pathlib import Path
-
 from artistic.db import db
 from artistic.models.base import Base
 
@@ -14,7 +13,7 @@ STORAGE_BUCKET = os.getenv('STORAGE_BUCKET')
 class Image(Base):
     __tablename__ = 'images'
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     name = db.Column(db.String(128))
     source_name = db.Column(db.String(128))
     subdirectory = db.Column(db.String(128))
