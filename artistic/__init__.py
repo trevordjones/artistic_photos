@@ -1,6 +1,5 @@
 __version__ = '0.1.0'
 
-import binascii
 from dotenv import load_dotenv
 from flask import Flask, redirect, render_template, request, url_for
 from flask_login import (
@@ -12,7 +11,6 @@ from flask_login import (
 )
 from flask_migrate import Migrate
 import os
-from pathlib import Path
 
 from artistic.db import db
 from artistic.views.auth import login_manager
@@ -22,7 +20,6 @@ from artistic.routes import routes
 load_dotenv()
 FLASK_ENV = os.getenv('FLASK_ENV')
 PG_URL = os.getenv('PGURL')
-ROOT = Path(__file__).parent
 
 
 def create_app(test_config=None):

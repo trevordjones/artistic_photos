@@ -1,5 +1,10 @@
 from flask import Blueprint, redirect, render_template, request, url_for
-from flask_login import login_required
+from flask_login import login_required, current_user
+import binascii
+import os
+from artistic.models.image import Image
+from pathlib import Path
+ROOT = Path(__file__).parent
 
 home_bp = Blueprint('home', __name__)
 @home_bp.route('/', methods=['GET', 'POST'])
@@ -17,9 +22,9 @@ def main():
         try:
             for key in request.files:
                 image = Image.upload_to_gcp(request.files[key], key, image_name)
+                image.user_id = current_user.id
                 names[key] = image.source_name
-                with app.app_context():
-                    image.save()
+                image.save()
             create_kaggle_script(names['content'], names['style'], 'random')
             subprocess.run([f'kaggle kernels push -p {ROOT.joinpath("temp")}/'], shell=True)
             os.remove(ROOT.joinpath('temp/nst.py'), missing_ok=True)
@@ -27,4 +32,4 @@ def main():
         except Exception as e:
             print(e)
 
-        return redirect(url_for('main'))
+        return redirect(url_for('home.main'))
