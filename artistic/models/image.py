@@ -8,6 +8,7 @@ from artistic.models.base import Base
 ROOT = Path(__file__).parent.parent
 FILE_PATH = ROOT.joinpath('temp')
 STORAGE_BUCKET = os.getenv('STORAGE_BUCKET')
+GCP_BASE_IMAGE_URL = os.getenv('GCP_BASE_IMAGE_URL')
 
 
 class Image(Base):
@@ -46,3 +47,14 @@ class Image(Base):
         self.__dict__.update(kwargs)
         db.session.add(self)
         db.session.commit()
+
+    def json(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'name': self.name,
+            'source_name': self.source_name,
+            'subdirectory': self.subdirectory,
+            'url': f'{GCP_BASE_IMAGE_URL}/{STORAGE_BUCKET}/{self.subdirectory}/{self.source_name}'
+            }
+        return {'id': self.id}

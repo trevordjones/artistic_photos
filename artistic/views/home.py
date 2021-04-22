@@ -17,6 +17,7 @@ def main():
     if request.method == 'GET':
         return render_template('home/index.html')
     else:
+        content_image = Image()
         image_name = binascii.b2a_hex(os.urandom(5)).decode('utf-8')
         names = {'content': '', 'style': ''}
         try:
@@ -25,6 +26,8 @@ def main():
                 image.user_id = current_user.id
                 names[key] = image.source_name
                 image.save()
+                if key == 'content':
+                    content_image = image
             create_kaggle_script(names['content'], names['style'], 'random')
             subprocess.run([f'kaggle kernels push -p {ROOT.joinpath("temp")}/'], shell=True)
             os.remove(ROOT.joinpath('temp/nst.py'), missing_ok=True)
@@ -32,4 +35,4 @@ def main():
         except Exception as e:
             print(e)
 
-        return redirect(url_for('home.main'))
+        return redirect(url_for('home.main', starting=content_image.name))

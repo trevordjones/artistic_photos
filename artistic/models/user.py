@@ -13,7 +13,7 @@ class User(Base):
     email = db.Column(db.String(128))
     password = db.Column(db.String)
     authenticated = db.Column(db.Boolean, default=False)
-    images = relationship('Image')
+    images = relationship('Image', lazy='dynamic')
 
 
     def is_active(self):
