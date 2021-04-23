@@ -1,13 +1,9 @@
 from flask import Blueprint, redirect, render_template, request, url_for
+from flask_login import LoginManager, current_user, login_user, logout_user
 from passlib.hash import sha256_crypt
-from flask_login import (
-    LoginManager,
-    current_user,
-    login_user,
-    logout_user,
-)
-from artistic.models.user import User
+
 from artistic.db import db
+from artistic.models.user import User
 
 auth_bp = Blueprint('auth', __name__)
 login_manager = LoginManager()

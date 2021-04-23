@@ -1,9 +1,10 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from passlib.hash import sha256_crypt
+from sqlalchemy.orm import relationship
 
-from artistic.models.base import Base
 from artistic.db import db
+from artistic.models.base import Base
 
 
 class User(Base):
@@ -12,6 +13,7 @@ class User(Base):
     email = db.Column(db.String(128))
     password = db.Column(db.String)
     authenticated = db.Column(db.Boolean, default=False)
+    images = relationship('Image', lazy='dynamic')
 
 
     def is_active(self):

@@ -2,19 +2,19 @@ import binascii
 from google.cloud import storage
 import os
 from pathlib import Path
-
-from artistic.models.base import Base
 from artistic.db import db
+from artistic.models.base import Base
 
 ROOT = Path(__file__).parent.parent
 FILE_PATH = ROOT.joinpath('temp')
 STORAGE_BUCKET = os.getenv('STORAGE_BUCKET')
+GCP_BASE_IMAGE_URL = os.getenv('GCP_BASE_IMAGE_URL')
 
 
 class Image(Base):
     __tablename__ = 'images'
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     name = db.Column(db.String(128))
     source_name = db.Column(db.String(128))
     subdirectory = db.Column(db.String(128))
@@ -47,3 +47,14 @@ class Image(Base):
         self.__dict__.update(kwargs)
         db.session.add(self)
         db.session.commit()
+
+    def json(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'name': self.name,
+            'source_name': self.source_name,
+            'subdirectory': self.subdirectory,
+            'url': f'{GCP_BASE_IMAGE_URL}/{STORAGE_BUCKET}/{self.subdirectory}/{self.source_name}'
+            }
+        return {'id': self.id}
