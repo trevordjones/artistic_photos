@@ -13,14 +13,12 @@ from flask_migrate import Migrate
 import os
 
 from artistic.db import db
-from artistic.views.auth import login_manager
 from artistic.routes import routes
-
+from artistic.views.auth import login_manager
 
 load_dotenv()
 FLASK_ENV = os.getenv('FLASK_ENV')
 PG_URL = os.getenv('PGURL')
-
 
 def create_app(test_config=None):
     # create and configure the app

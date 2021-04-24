@@ -1,10 +1,9 @@
 from flask import Blueprint, redirect, render_template, request, url_for
-from flask_login import current_user
+from flask_login import current_user, login_required
+from flask_sqlalchemy import sqlalchemy
 
-from flask_login import login_required
 from artistic.db import db
 from artistic.models.image import Image
-from flask_sqlalchemy import sqlalchemy
 
 images_bp = Blueprint('api', __name__)
 

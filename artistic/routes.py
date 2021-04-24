@@ -1,4 +1,5 @@
-from artistic.views import auth_bp, home_bp, api_bp
+from artistic.views import api_bp, auth_bp, home_bp
+
 
 def routes(app):
     app.register_blueprint(auth_bp)

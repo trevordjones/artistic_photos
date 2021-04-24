@@ -1,9 +1,11 @@
-from flask import Blueprint, redirect, render_template, request, url_for
-from flask_login import login_required, current_user
 import binascii
+from flask import Blueprint, redirect, render_template, request, url_for
+from flask_login import current_user, login_required
 import os
-from artistic.models.image import Image
 from pathlib import Path
+
+from artistic.models.image import Image
+
 ROOT = Path(__file__).parent
 
 home_bp = Blueprint('home', __name__)
