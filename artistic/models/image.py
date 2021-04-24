@@ -19,6 +19,8 @@ class Image(Base):
     name = db.Column(db.String(128))
     source_name = db.Column(db.String(128))
     subdirectory = db.Column(db.String(128))
+    width = db.Column(db.Integer)
+    height = db.Column(db.Integer)
 
     @classmethod
     def upload_to_gcp(cls, file, subdirectory, image_name):
@@ -56,6 +58,8 @@ class Image(Base):
             'name': self.name,
             'source_name': self.source_name,
             'subdirectory': self.subdirectory,
+            'width': self.width,
+            'height': self.height,
             'url': f'{GCP_BASE_IMAGE_URL}/{STORAGE_BUCKET}/{self.subdirectory}/{self.source_name}'
             }
         return {'id': self.id}

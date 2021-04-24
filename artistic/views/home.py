@@ -5,6 +5,8 @@ import os
 from pathlib import Path
 
 from artistic.models.image import Image
+from io import BytesIO
+from PIL import Image as PILImage
 
 ROOT = Path(__file__).parent.parent
 KAGGLE_ENABLED = os.getenv('KAGGLE_ENABLED', default=False)
@@ -25,8 +27,17 @@ def main():
         names = {'content': '', 'style': ''}
         try:
             for key in request.files:
-                image = Image.upload_to_gcp(request.files[key], key, image_name)
+                if not request.files[key].filename:
+                    continue
+                img = request.files[key]
+                image = Image.upload_to_gcp(img, key, image_name)
+                img.seek(0)
+                img_bytes = BytesIO(img.stream.read())
+                img = PILImage.open(img_bytes)
+                width, height = img.size
                 image.user_id = current_user.id
+                image.width = width
+                image.height = height
                 names[key] = image.source_name
                 image.save()
                 if key == 'content':

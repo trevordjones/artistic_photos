@@ -6,7 +6,7 @@
 <div id="home">
   <div class="row">
     <div class="col-sm-9">
-      <img v-bind:src=[[image.url]] />
+      <img v-bind:src=[[image.url]] v-bind:width="[[width]]" v-bind:height="[[height]]"/>
     </div>
     <div class="col-sm-3">
       <div class="card" v-bind:style="{width: '18rem', height: cardHeight() + 'rem', 'overflow-y': 'auto'}">

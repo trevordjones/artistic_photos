@@ -6,6 +6,8 @@ var main = new Vue({
     image: {},
     images: [],
     selected_id: null,
+    width: null,
+    height: null,
   },
   mounted() {
     this.$http
@@ -18,6 +20,7 @@ var main = new Vue({
         .then((response) => {
           this.image = response.body.image;
           this.selected_id = id;
+          this.setDimensions();
         })
     }
   },
@@ -32,6 +35,14 @@ var main = new Vue({
     selectPhoto: function(img) {
       this.selected_id = img.id;
       this.image = img;
+      this.setDimensions();
+    },
+    setDimensions: function() {
+      const maxWidth = 600;
+      const maxHeight = 600;
+      let ratio = Math.min(maxWidth / this.image.width, maxHeight / this.image.height);
+      this.width = this.image.width * ratio;
+      this.height = this.image.height * ratio;
     }
   }
 })
