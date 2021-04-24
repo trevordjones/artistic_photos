@@ -30,7 +30,7 @@ def create_kaggle_script(content_name, style_name, start_as):
         json.dump(kernel_metadata, file)
 
     image_id = content_name.split('-')[0]
-    content_name = f'content/{content_name}'
+    content_name = f'starting/{content_name}'
     style_name = f'style/{style_name}'
     img_name = f'{image_id}.png'
     destination_blob_name = f'generated/{img_name}'
