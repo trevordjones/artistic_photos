@@ -4,7 +4,25 @@
 {% block content %}
 
 <div id="home">
-  <img v-bind:src=[[image.url]] />
+  <div class="row">
+    <div class="col-sm-9">
+      <img v-bind:src=[[image.url]] />
+    </div>
+    <div class="col-sm-3">
+      <div class="card" v-bind:style="{width: '18rem', height: cardHeight() + 'rem', 'overflow-y': 'auto'}">
+        <ul class="list-group list-group-flush">
+          <li
+            v-for="(img, index) in images"
+            class="list-group-item"
+            v-bind:class="{active: img.id == selected_id, 'custom-list-group-item': img.id != selected_id}"
+            v-on:click="selectPhoto(img)"
+          >
+            [[img.name]]
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
   <form id="uploadbanner" enctype="multipart/form-data" method="post" action="#">
 
     <div class="form-group row">

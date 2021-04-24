@@ -1,0 +1,9 @@
+.custom-list-group-item {
+  height: 3rem;
+  cursor: pointer;
+}
+
+.custom-list-group-item:hover {
+  background-color: #eee;
+}
+

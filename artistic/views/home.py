@@ -37,4 +37,4 @@ def main():
         except Exception as e:
             print(e)
 
-        return redirect(url_for('home.main', starting=content_image.name))
+        return redirect(url_for('home.main', starting=content_image.id))
