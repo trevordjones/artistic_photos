@@ -6,7 +6,8 @@ from pathlib import Path
 
 from artistic.models.image import Image
 
-ROOT = Path(__file__).parent
+ROOT = Path(__file__).parent.parent
+KAGGLE_ENABLED - os.getenv('KAGGLE_ENABLED', default=False)
 
 home_bp = Blueprint('home', __name__)
 @home_bp.route('/', methods=['GET', 'POST'])
@@ -30,10 +31,12 @@ def main():
                 image.save()
                 if key == 'content':
                     content_image = image
-            create_kaggle_script(names['content'], names['style'], 'random')
-            subprocess.run([f'kaggle kernels push -p {ROOT.joinpath("temp")}/'], shell=True)
-            os.remove(ROOT.joinpath('temp/nst.py'), missing_ok=True)
-            os.remove(ROOT.joinpath('temp/kernel-metadata.json'), missing_ok=True)
+
+            if KAGGLE_ENABLED:
+                create_kaggle_script(names['content'], names['style'], 'random')
+                subprocess.run([f'kaggle kernels push -p {ROOT.joinpath("temp")}/'], shell=True)
+                Path(ROOT.joinpath('temp/nst.py')).unlink(missing_ok=True)
+                Path(ROOT.joinpath('temp/kernel-metadata.json')).unlink(missing_ok=True)
         except Exception as e:
             print(e)
 
