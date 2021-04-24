@@ -7,7 +7,7 @@ from pathlib import Path
 from artistic.models.image import Image
 
 ROOT = Path(__file__).parent.parent
-KAGGLE_ENABLED - os.getenv('KAGGLE_ENABLED', default=False)
+KAGGLE_ENABLED = os.getenv('KAGGLE_ENABLED', default=False)
 
 home_bp = Blueprint('home', __name__)
 @home_bp.route('/', methods=['GET', 'POST'])
