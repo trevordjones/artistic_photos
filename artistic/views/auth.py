@@ -17,7 +17,7 @@ def load_user(user_id):
 
 @login_manager.unauthorized_handler
 def unauthorized():
-    return redirect(url_for('login'))
+    return redirect(url_for('auth.login'))
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -97,6 +97,6 @@ def reset_token(token):
         flash('Your password has been reset! You can now login.', 'info')
         return redirect(url_for('auth.login'))
     return render_template('reset_token.html', title='Reset Password')
-    
 
-    
+
+
