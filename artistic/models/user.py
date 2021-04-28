@@ -1,7 +1,7 @@
 from flask import Flask
-from flask import current_app as app
+import os
 from flask_sqlalchemy import SQLAlchemy
-from passlib.hash import sha256_crypt   
+from passlib.hash import sha256_crypt
 from sqlalchemy.orm import relationship
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
@@ -44,12 +44,12 @@ class User(Base):
         return f'User {email} created'
 
     def get_reset_token(self, expires_sec=1800):
-        s = Serializer(app.config['SECRET_KEY'], expires_sec)
+        s = Serializer(os.getenv('SECRET_KEY'), expires_sec)
         return s.dumps({'user_id': self.id}).decode('utf-8')
 
     @staticmethod
     def verify_reset_token(token):
-        s = Serializer(app.config['SECRET_KEY'])
+        s = Serializer(os.getenv('SECRET_KEY'))
         try:
             user_id = s.loads(token)['user_id']
         except:
