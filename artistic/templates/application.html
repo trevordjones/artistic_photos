@@ -8,21 +8,16 @@
     {% endblock %}
   </head>
   <body>
-  <nav class="navbar mb-3 navbar-dark bg-dark">
-    <a class="navbar-brand" href="#">Artistic Photos</a>
-    {% if current_user.is_authenticated %}
-      <form action="/logout" method="post">
-        <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Logout</button>
-      </form>
-    {% else %}
-        <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Login</button>
-    {% endif %}
-  </nav>
-    <div id="content" class="padding-top">
-      <div class="container">
-        {% block content %}{% endblock %}
-      </div>
-    </div>
+    <nav class="navbar mb-3 navbar-dark bg-dark">
+      <a class="navbar-brand" href="#">Artistic Photos</a>
+      {% if current_user.is_authenticated %}
+        <form action="/logout" method="post">
+          <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Logout</button>
+        </form>
+      {% else %}
+          <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Login</button>
+      {% endif %}
+    </nav>
     <div class="col-md-8">
       {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -33,6 +28,11 @@
           {% endfor %}
         {% endif %}
       {% endwith %}
+    </div>
+    <div id="content" class="padding-top">
+      <div class="container">
+        {% block content %}{% endblock %}
+      </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
