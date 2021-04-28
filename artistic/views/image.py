@@ -11,6 +11,7 @@ import os
 from pathlib import Path
 import subprocess
 
+import artistic.kaggle
 from artistic.kaggle_script import create_kaggle_script
 from artistic.models.image import Image
 
@@ -60,7 +61,7 @@ def artistic():
         image.height = height
         image.save()
         if KAGGLE_ENABLED:
-            create_kaggle_script(starting_image.source_name, image.source_name, 'random')
+            kaggle.nst(starting_image.source_name, image.source_name, 'random')
             subprocess.run([f'kaggle kernels push -p {ROOT.joinpath("temp")}/'], shell=True)
             Path(ROOT.joinpath('temp/nst.py')).unlink(missing_ok=True)
             Path(ROOT.joinpath('temp/kernel-metadata.json')).unlink(missing_ok=True)

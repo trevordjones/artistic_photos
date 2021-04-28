@@ -11,7 +11,7 @@ KAGGLE_GPU_ENABLED = os.getenv('KAGGLE_GPU_ENABLED')
 STORAGE_BUCKET = os.getenv('STORAGE_BUCKET')
 
 
-def create_kaggle_script(content_name, style_name, start_as):
+def nst(content_name, style_name, start_as):
     kernel_metadata = {
         'id': f'{KAGGLE_USER}/{KAGGLE_SLUG}',
         'title': KAGGLE_SLUG,
