@@ -6,7 +6,14 @@
 <div id="home">
   <div class="row">
     <div class="col-sm-9">
-      <img v-bind:src=[[image.url]] v-bind:width="[[width]]" v-bind:height="[[height]]"/>
+      <canvas
+        ref="startingImageCanvas"
+        v-bind:width="[[width]]"
+        v-bind:height="[[height]]"
+        v-on:mousedown="setDrag"
+        v-on:mousemove="dragLine"
+        v-on:mouseup="unsetDrag"
+      > </canvas>
     </div>
     <div class="col-sm-3">
       <div class="card" v-bind:style="{width: '18rem', height: cardHeight() + 'rem', 'overflow-y': 'auto'}">
@@ -45,6 +52,7 @@
       </div>
     </div>
 
+    <input type="hidden" name="canvas_image" v-bind:value="[[canvasImage]]" />
     <input type="hidden" name="starting_id" v-bind:value="[[selected_id]]"/>
     <input type="submit" value="Create Artistic Photo" id="submit" class="btn btn-primary" />
   </form>
@@ -54,5 +62,5 @@
 
 {% block script %}
 <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.2"></script>
-<script src="{{ url_for('static', filename='home/index.js') }}"></script>
+<script src="{{ url_for('static', filename='scripts/home/index.js') }}"></script>
 {% endblock %}

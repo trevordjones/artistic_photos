@@ -1,7 +1,11 @@
 from PIL import Image as PILImage
 import binascii
+from binascii import a2b_base64
+import codecs
 from flask import Blueprint, redirect, render_template, request, url_for
+import re
 from flask_login import current_user, login_required
+from werkzeug.datastructures import FileStorage
 from io import BytesIO
 import os
 from pathlib import Path
@@ -30,6 +34,7 @@ def starting():
         image.width = width
         image.height = height
         image.save()
+        image.download()
 
         return redirect(url_for('home.main', starting=image.id))
     else:
@@ -59,5 +64,18 @@ def artistic():
             subprocess.run([f'kaggle kernels push -p {ROOT.joinpath("temp")}/'], shell=True)
             Path(ROOT.joinpath('temp/nst.py')).unlink(missing_ok=True)
             Path(ROOT.joinpath('temp/kernel-metadata.json')).unlink(missing_ok=True)
+    if request.values['canvas_image']:
+        pattern = re.compile('data:image/(png|jpeg);base64,(.*)$')
+        img_bytes = pattern.match(request.values['canvas_image']).group(2)
+        binary_data = a2b_base64(img_bytes)
+        img = FileStorage(BytesIO(binary_data), 'tmp.png')
+        image_name = binascii.b2a_hex(os.urandom(5)).decode('utf-8')
+        image = Image.upload_to_gcp(img, 'starting', image_name)
+        img = PILImage.open(BytesIO(binary_data))
+        width, height = img.size
+        image.user_id = current_user.id
+        image.width = width
+        image.height = height
+        image.save()
 
     return redirect(url_for('home.main'))
