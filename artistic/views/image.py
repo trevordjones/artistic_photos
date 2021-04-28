@@ -12,7 +12,6 @@ from pathlib import Path
 import subprocess
 
 import artistic.kaggle
-from artistic.kaggle_script import create_kaggle_script
 from artistic.models.image import Image
 
 ROOT = Path(__file__).parent.parent
