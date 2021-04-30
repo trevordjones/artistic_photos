@@ -2,6 +2,7 @@ import binascii
 from google.cloud import storage
 import os
 from pathlib import Path
+from sqlalchemy.orm import relationship
 
 from artistic.db import db
 from artistic.models.base import Base
@@ -21,6 +22,10 @@ class Image(Base):
     subdirectory = db.Column(db.String(128))
     width = db.Column(db.Integer)
     height = db.Column(db.Integer)
+    starting_image_id = db.Column(db.Integer, db.ForeignKey('images.id'))
+    starting_image = relationship('Image', remote_side=[id])
+    artistic_images = relationship('Image', lazy='dynamic')
+    user = relationship('User')
 
     @classmethod
     def upload_to_gcp(cls, file, subdirectory, image_name):

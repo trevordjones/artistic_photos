@@ -52,9 +52,14 @@
       </div>
     </div>
 
+    <div class="form-check">
+      <input class="form-check-input" name="blur" type="checkbox" value="blur">
+      <label class="form-check-label">Blur</label>
+    </div>
+
     <input type="hidden" name="canvas_image" v-bind:value="[[canvasImage]]" />
     <input type="hidden" name="starting_id" v-bind:value="[[selected_id]]"/>
-    <input type="submit" value="Create Artistic Photo" id="submit" class="btn btn-primary" />
+    <input type="submit" value="Create Artistic Photo" id="submit" class="mt-5 btn btn-primary" />
   </form>
 </div>
 
