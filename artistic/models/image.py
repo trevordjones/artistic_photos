@@ -35,6 +35,7 @@ class Image(Base):
             storage_client = storage.Client()
             bucket_name = STORAGE_BUCKET
             bucket = storage_client.bucket(bucket_name)
+            image_name = binascii.b2a_hex(os.urandom(5)).decode('utf-8')
             gcp_source_name = f'{image_name}-{file_path.split("/")[-1]}'
             destination_blob_name = f'{subdirectory}/{gcp_source_name}'
             blob = bucket.blob(destination_blob_name)

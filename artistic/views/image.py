@@ -24,8 +24,7 @@ image_bp = Blueprint('images', __name__)
 def starting():
     img = request.files['starting']
     if img.filename:
-        image_name = binascii.b2a_hex(os.urandom(5)).decode('utf-8')
-        image = Image.upload_to_gcp(img, 'starting', image_name)
+        image = Image.upload_to_gcp(img, 'starting')
         img.seek(0)
         img_bytes = BytesIO(img.stream.read())
         img = PILImage.open(img_bytes)
@@ -49,8 +48,7 @@ def artistic():
     starting_image = Image.query.get(request.values['starting_id'])
     if request.files['style'].filename:
         img = request.files['style']
-        image_name = binascii.b2a_hex(os.urandom(5)).decode('utf-8')
-        image = Image.upload_to_gcp(img, 'style', image_name)
+        image = Image.upload_to_gcp(img, 'style')
         img.seek(0)
         img_bytes = BytesIO(img.stream.read())
         img = PILImage.open(img_bytes)
@@ -70,8 +68,7 @@ def artistic():
         img_bytes = pattern.match(request.values['canvas_image']).group(2)
         binary_data = a2b_base64(img_bytes)
         img = FileStorage(BytesIO(binary_data), 'outline.png')
-        image_name = binascii.b2a_hex(os.urandom(5)).decode('utf-8')
-        image = Image.upload_to_gcp(img, 'starting', image_name)
+        image = Image.upload_to_gcp(img, 'starting')
         img = PILImage.open(BytesIO(binary_data))
         width, height = img.size
         image.user_id = current_user.id
