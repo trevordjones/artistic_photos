@@ -8,7 +8,6 @@ ROOT = Path(__file__).parent.parent
 KAGGLE_PATH = ROOT.joinpath('temp')
 KAGGLE_USER = os.getenv('KAGGLE_USER')
 KAGGLE_SLUG = os.getenv('KAGGLE_BLUR_SLUG')
-KAGGLE_GPU_ENABLED = os.getenv('KAGGLE_GPU_ENABLED')
 STORAGE_BUCKET = os.getenv('STORAGE_BUCKET')
 
 
