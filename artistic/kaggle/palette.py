@@ -75,7 +75,7 @@ def palette(image, user_id, image_id):
             download_blob.download_to_filename(image_name)
 
             img = imread(image_path)
-            if len(img.shape) == 4:
+            if img.shape[-1] == 4:
                 img = converter.rgba2rgb(img)
             img = resize(img, (200, 200))
             data = pd.DataFrame(img.reshape(-1, 3), columns=['R', 'G', 'B'])
