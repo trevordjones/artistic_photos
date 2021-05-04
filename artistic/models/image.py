@@ -1,8 +1,10 @@
+from PIL import Image as PILImage
 import binascii
 from google.cloud import storage
 import os
 from pathlib import Path
 from sqlalchemy.orm import relationship
+from io import BytesIO
 
 from artistic.db import db
 from artistic.models.base import Base
@@ -25,10 +27,10 @@ class Image(Base):
     starting_image_id = db.Column(db.Integer, db.ForeignKey('images.id'))
     starting_image = relationship('Image', remote_side=[id])
     artistic_images = relationship('Image', lazy='dynamic')
-    user = relationship('User')
+    palettes = relationship('Palette', lazy='dynamic')
 
     @classmethod
-    def upload_to_gcp(cls, file, subdirectory, image_name):
+    def upload_to_gcp(cls, file, subdirectory, image_name=None):
         try:
             file_path = f'{FILE_PATH}/{file.filename}'
             file.save(file_path)
@@ -52,7 +54,12 @@ class Image(Base):
             os.remove(file_path)
 
 
-    def save(self, **kwargs):
+    def save(self, file=None, **kwargs):
+        if file:
+            file.seek(0)
+            img_bytes = BytesIO(file.stream.read())
+            pil_img = PILImage.open(img_bytes)
+            self.width, self.height = pil_img.size
         self.__dict__.update(kwargs)
         db.session.add(self)
         db.session.commit()
@@ -76,4 +83,3 @@ class Image(Base):
             'height': self.height,
             'url': f'/artistic/static/img/{self.source_name}'
             }
-        return {'id': self.id}

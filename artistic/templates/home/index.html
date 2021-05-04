@@ -5,43 +5,95 @@
 
 <div id="home">
   <div class="row">
-    <div class="col-sm-9">
-      <canvas
-        ref="startingImageCanvas"
-        v-bind:width="[[width]]"
-        v-bind:height="[[height]]"
-        v-on:mousedown="setDrag"
-        v-on:mousemove="dragLine"
-        v-on:mouseup="unsetDrag"
-      > </canvas>
-    </div>
-    <div class="col-sm-3">
-      <div class="card" v-bind:style="{width: '18rem', height: cardHeight() + 'rem', 'overflow-y': 'auto'}">
-        <ul class="list-group list-group-flush">
-          <li
-            v-for="(img, index) in images"
-            class="list-group-item"
-            v-bind:class="{active: img.id == selected_id, 'custom-list-group-item': img.id != selected_id}"
-            v-on:click="selectPhoto(img)"
-          >
-            [[img.name]]
-          </li>
-        </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Starting Image</h5>
+      <div class="row">
+        <div class="col-sm-8">
+          <canvas
+            ref="startingImageCanvas"
+            v-bind:width="[[width]]"
+            v-bind:height="[[height]]"
+            v-on:mousedown="setDrag"
+            v-on:mousemove="dragLine"
+            v-on:mouseup="unsetDrag"
+          > </canvas>
+        </div>
+        <div class="col-sm-4">
+          <div v-bind:style="{width: '18rem', height: cardHeight() + 'rem', 'overflow-y': 'auto'}">
+            <ul class="list-group list-group-flush">
+              <li
+                v-for="(img, index) in images"
+                class="list-group-item"
+                v-bind:class="{active: img.id == selected_id, 'custom-list-group-item': img.id != selected_id}"
+                v-on:click="selectPhoto(img)"
+              >
+                [[img.name]]
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <form id="starting-image" enctype="multipart/form-data" method="post" action="/images/starting">
+          <div class="form-group">
+            <div class="col-sm-12">
+              <input id="fileupload" class="form-control" name="starting" type="file" />
+            </div>
+          </div>
+
+          <input type="submit" value="Create Starting Image" id="submit" class="btn btn-dark" />
+        </form>
       </div>
     </div>
   </div>
 
-  <form id="starting-image" enctype="multipart/form-data" method="post" action="/images/starting">
+  <div class="card mt-5">
+    <div class="card-body">
+      <h5 class="card-title">Color Palette</h5>
+      <div class="row">
+        <div class="col-sm-8">
+          <div
+            v-for="(hex, index) in palette.hex_values"
+            v-bind:style="{background: hex, width: '100px', height: '150px', float: 'left'}"
+          >
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div v-bind:style="{width: '18rem', height: cardHeight() + 'rem', 'overflow-y': 'auto'}">
+            <ul class="list-group list-group-flush">
+              <li
+                v-for="(plt, index) in palettes"
+                class="list-group-item"
+                v-bind:class="{active: plt.id == selected_plt_id, 'custom-list-group-item': plt.id != selected_plt_id}"
+                v-on:click="selectPalette(plt)"
+              >
+                [[plt.name]]
+              </li>
+            </ul>
+          </div>
+        </div>
 
-    <div class="form-group row">
-      <label class="col-sm-12 col-sm-label">Starting Photo</label>
-      <div class="col-sm-4">
-        <input id="fileupload" class="form-control" name="starting" type="file" />
+        <form id="color-palette" enctype="multipart/form-data" method="post" action="/images/palettes">
+
+          <div class="form-group">
+            <div class="col-sm-12">
+              <input id="fileupload" class="form-control" name="color_palette" type="file" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="exampleInputEmail1" class="col-sm-12 col-sm-label">Palette Name</label>
+            <div class="col-sm-12">
+              <input type="text" class="form-control" placeholder="Enter Palette Name">
+            </div>
+          </div>
+
+          <input type="submit" value="Create Color Palette" id="submit" class="btn btn-dark" />
+        </form>
       </div>
     </div>
-
-    <input type="submit" value="Create Starting Photo" id="submit" class="btn btn-dark" />
-  </form>
+  </div>
 
   <h1 class="margin-top mt-5">How would you like to edit your photo?</h1>
   <form id="artistic-image" enctype="multipart/form-data" method="post" action="/images/artistic">

@@ -2,7 +2,6 @@ var main = new Vue({
   el: '#home',
   delimiters: ['[[', ']]'],
   data: {
-    message: 'hello vue',
     image: {},
     images: [],
     selected_id: null,
@@ -15,7 +14,9 @@ var main = new Vue({
     prevY: null,
     drag: false,
     canvasImage: null,
-    blah: 'something',
+    palette: {},
+    palettes: [],
+    selected_plt_id: null,
   },
   mounted() {
     this.canvas = this.$refs.startingImageCanvas;
@@ -35,6 +36,10 @@ var main = new Vue({
           this.setImageOnCanvas();
         })
     }
+
+    this.$http
+      .get('/api/v1/palettes')
+      .then(response => this.palettes = response.body.palettes)
   },
   methods: {
     setImageOnCanvas: function(imageUrl) {
@@ -75,6 +80,10 @@ var main = new Vue({
           this.setDimensions();
           this.setImageOnCanvas();
         })
+    },
+    selectPalette: function(plt) {
+      this.selected_plt_id = plt.id;
+      this.palette = plt;
     },
     setDimensions: function() {
       const maxWidth = 600;

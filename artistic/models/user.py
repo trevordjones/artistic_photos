@@ -16,6 +16,7 @@ class User(Base):
     password = db.Column(db.String)
     authenticated = db.Column(db.Boolean, default=False)
     images = relationship('Image', lazy='dynamic')
+    palettes = relationship('Palette', lazy='dynamic')
 
 
     def is_active(self):

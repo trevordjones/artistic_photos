@@ -44,7 +44,7 @@ def create_app(test_config=None):
     login_manager.init_app(app)
 
     migrate = Migrate(app, db) # this variable needed for Flask-Migrate
-    from artistic.models import Image, User
+    from artistic.models import Image, User, Palette
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
