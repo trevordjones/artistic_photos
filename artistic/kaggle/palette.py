@@ -10,7 +10,7 @@ KAGGLE_USER = os.getenv('KAGGLE_USER')
 STORAGE_BUCKET = os.getenv('STORAGE_BUCKET')
 
 
-def palette(image, user_id, image_id):
+def palette(image, user_id, image_id, palette_name):
     kernel_metadata = {
         'id': f'{KAGGLE_USER}/297palette',
         'title': '297palette',
@@ -32,7 +32,7 @@ def palette(image, user_id, image_id):
     num_palettes = 6
     user_id
     image_id
-    name = image.name
+    name = palette_name
     app_url = APP_URL
     image_name = image.source_name
     image_blob = f'palette/{image_name}'

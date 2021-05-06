@@ -23,7 +23,12 @@ def create():
             user_id=current_user.id,
             )
         if KAGGLE_ENABLED:
-            kaggle.palette(image=palette, user_id=current_user.id, image_id=palette.id)
+            kaggle.palette(
+                image=palette,
+                user_id=current_user.id,
+                image_id=palette.id,
+                palette_name=request.values['palette_name'],
+                )
             subprocess.run([f'kaggle kernels push -p {ROOT.joinpath("temp")}/'], shell=True)
             Path(ROOT.joinpath('temp/palette.py')).unlink(missing_ok=True)
             Path(ROOT.joinpath('temp/kernel-metadata.json')).unlink(missing_ok=True)
