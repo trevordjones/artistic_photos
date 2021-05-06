@@ -1,5 +1,5 @@
-import json
 import binascii
+import json
 import os
 from pathlib import Path
 import textwrap
@@ -86,7 +86,6 @@ def blur(outline_image, starting_image):
                         blurred[ridx][cidx] = starting_image[ridx][cidx]
 
 
-            # save blurred
             saved_image_name = "%s"
             cv2.imwrite(saved_image_name, blurred)
             destination_blob_name = "%s"

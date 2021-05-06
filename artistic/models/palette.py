@@ -1,9 +1,10 @@
+from pathlib import Path
+import sqlalchemy as sql
+from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy.orm import relationship
+
 from artistic.db import db
 from artistic.models.base import Base
-from pathlib import Path
-from sqlalchemy.dialects.postgresql import ARRAY
-import sqlalchemy as sql
-from sqlalchemy.orm import relationship
 
 ROOT = Path(__file__).parent.parent
 FILE_PATH = ROOT.joinpath('temp')

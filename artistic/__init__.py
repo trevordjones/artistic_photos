@@ -13,10 +13,8 @@ from flask_migrate import Migrate
 import os
 
 from artistic.db import db
-from artistic.views.auth import login_manager
-from artistic.views.auth import mail
 from artistic.routes import routes
-from artistic.views.auth import login_manager
+from artistic.views.auth import login_manager, mail
 
 load_dotenv()
 FLASK_ENV = os.getenv('FLASK_ENV')
@@ -44,7 +42,7 @@ def create_app(test_config=None):
     login_manager.init_app(app)
 
     migrate = Migrate(app, db) # this variable needed for Flask-Migrate
-    from artistic.models import Image, User, Palette
+    from artistic.models import Image, Palette, User
 
     if test_config is None:
         # load the instance config, if it exists, when not testing

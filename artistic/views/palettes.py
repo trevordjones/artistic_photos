@@ -1,11 +1,11 @@
 from flask import Blueprint, redirect, request, url_for
+from flask_login import current_user, login_required
 import os
 from pathlib import Path
-import artistic.kaggle as kaggle
 import subprocess
-from flask_login import current_user, login_required
-from artistic.models.image import Image
 
+import artistic.kaggle as kaggle
+from artistic.models.image import Image
 
 ROOT = Path(__file__).parent.parent
 KAGGLE_ENABLED = os.getenv('KAGGLE_ENABLED', default=False)

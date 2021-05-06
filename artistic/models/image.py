@@ -1,10 +1,10 @@
 from PIL import Image as PILImage
 import binascii
 from google.cloud import storage
+from io import BytesIO
 import os
 from pathlib import Path
 from sqlalchemy.orm import relationship
-from io import BytesIO
 
 from artistic.db import db
 from artistic.models.base import Base

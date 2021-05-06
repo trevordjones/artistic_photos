@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, render_template, request, url_for
+from flask import Blueprint, redirect, request, url_for
 from flask_login import current_user, login_required
 from flask_sqlalchemy import sqlalchemy
 

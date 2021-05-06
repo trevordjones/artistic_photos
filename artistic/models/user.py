@@ -1,9 +1,9 @@
 from flask import Flask
-import os
 from flask_sqlalchemy import SQLAlchemy
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+import os
 from passlib.hash import sha256_crypt
 from sqlalchemy.orm import relationship
-from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 from artistic.db import db
 from artistic.models.base import Base

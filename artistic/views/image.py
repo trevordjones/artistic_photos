@@ -3,13 +3,13 @@ import binascii
 from binascii import a2b_base64
 import codecs
 from flask import Blueprint, redirect, render_template, request, url_for
-import re
 from flask_login import current_user, login_required
-from werkzeug.datastructures import FileStorage
 from io import BytesIO
 import os
 from pathlib import Path
+import re
 import subprocess
+from werkzeug.datastructures import FileStorage
 
 import artistic.kaggle as kaggle
 from artistic.models.image import Image

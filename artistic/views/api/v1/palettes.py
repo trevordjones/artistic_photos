@@ -1,9 +1,10 @@
-import os
-from flask import Blueprint, redirect, render_template, request, url_for, Response
+from flask import Blueprint, Response, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from flask_sqlalchemy import sqlalchemy
+import os
 
 from artistic.models.palette import Palette
+
 TOKEN = os.getenv('PALETTE_TOKEN')
 
 palettes_bp = Blueprint('api.v1.palettes', __name__)
