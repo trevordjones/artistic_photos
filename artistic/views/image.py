@@ -2,7 +2,8 @@ from PIL import Image as PILImage
 import binascii
 from binascii import a2b_base64
 import codecs
-from flask import Blueprint, redirect, render_template, request, url_for
+from flask import Blueprint, redirect, render_template, request, url_for, flash
+import re
 from flask_login import current_user, login_required
 from io import BytesIO
 import os
@@ -43,7 +44,7 @@ def starting():
 @login_required
 def artistic():
     if not request.values['starting_id']:
-        # todo - send an error message
+        flash('No starting image selected', 'danger')
         return redirect(url_for('home.main'))
     starting_image = Image.query.get(request.values['starting_id'])
     if request.files['style'].filename:
