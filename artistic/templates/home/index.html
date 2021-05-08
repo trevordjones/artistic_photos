@@ -17,6 +17,16 @@
       </a>
     </li>
     <li class="nav-item">
+      <a
+        class="nav-link"
+        v-bind:class="{active: showStyleImage}"
+        v-on:click="setTab('styleImage')"
+        href="#"
+      >
+        Style Image
+      </a>
+    </li>
+    <li class="nav-item">
       <a class="nav-link" v-bind:class="{active: showPalette}" v-on:click="setTab('palette')" href="#">Color Palette</a>
     </li>
     <li class="nav-item">
@@ -25,6 +35,9 @@
   </ul>
   <div v-if="showStartingImage">
     {% include 'partials/_starting_image.html' %}
+  </div>
+  <div v-if="showStyleImage">
+    {% include 'partials/_style_image.html' %}
   </div>
   <div v-if="showPalette">
     {% include 'partials/_palette.html' %}

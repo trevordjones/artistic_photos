@@ -1,0 +1,38 @@
+<div class="card mt-5">
+  <div class="card-body">
+    <h5 class="card-title">Style Image</h5>
+    <div class="row">
+      <div class="col-sm-8">
+        <img
+          v-bind:src="[[styleImage.url]]"
+          v-bind:width="[[styleWidth]]"
+          v-bind:height="[[styleHeight]]"
+        >
+      </div>
+      <div class="col-sm-4">
+        <div v-bind:style="{width: '18rem', height: cardHeight() + 'rem', 'overflow-y': 'auto'}">
+          <ul class="list-group list-group-flush">
+            <li
+              v-for="(img, index) in styleImages"
+              class="list-group-item"
+              v-bind:class="{active: img.id == selected_style_id, 'custom-list-group-item': img.id != selected_style_id}"
+              v-on:click="selectStylePhoto(img)"
+            >
+              [[img.name]]
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <form id="artistic-image" enctype="multipart/form-data" method="post" action="/images/style">
+        <div class="form-group">
+          <div class="col-sm-12">
+            <input id="fileupload" class="form-control" name="style" type="file" />
+          </div>
+        </div>
+        <input type="submit" value="Create Style Image" id="submit" class="btn btn-dark" />
+      </form>
+
+    </div>
+  </div>
+</div>

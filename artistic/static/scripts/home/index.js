@@ -3,13 +3,19 @@ var main = new Vue({
   delimiters: ['[[', ']]'],
   data: {
     showStartingImage: true,
+    showStyleImage: false,
     showPalette: false,
     showEdit: false,
     image: {},
+    styleImage: {},
     images: [],
+    styleImages: [],
     selected_id: null,
+    selected_style_id: null,
     width: null,
     height: null,
+    styleWidth: null,
+    styleHeight: null,
     canvas: {},
     canvasCtx: {},
     rect: {},
@@ -27,7 +33,10 @@ var main = new Vue({
 
     this.$http
       .get('/api/v1/images')
-      .then(response => this.images = response.body.images)
+      .then((response) => {
+        this.images = response.body.images
+        this.filterStyleImages();
+      })
     let id = new URL(location.href).searchParams.get('starting');
     if (id != null) {
       this.$http
@@ -47,6 +56,7 @@ var main = new Vue({
   methods: {
     setTab: function(tabName) {
       this.showStartingImage = tabName == 'startingImage';
+      this.showStyleImage = tabName == 'styleImage';
       this.showPalette = tabName == 'palette';
       this.showEdit = tabName == 'edit';
     },
@@ -89,6 +99,15 @@ var main = new Vue({
           this.setImageOnCanvas();
         })
     },
+    selectStylePhoto: function(img) {
+      this.$http
+        .get(`/api/v1/images/download/${img.id}`)
+        .then((response) => {
+          this.selected_style_id = img.id;
+          this.styleImage = img;
+          this.setStyleDimensions();
+        })
+    },
     selectPalette: function(plt) {
       this.selected_plt_id = plt.id;
       this.palette = plt;
@@ -99,6 +118,13 @@ var main = new Vue({
       let ratio = Math.min(maxWidth / this.image.width, maxHeight / this.image.height);
       this.width = this.image.width * ratio;
       this.height = this.image.height * ratio;
+    },
+    setStyleDimensions: function() {
+      const maxWidth = 600;
+      const maxHeight = 600;
+      let ratio = Math.min(maxWidth / this.styleImage.width, maxHeight / this.styleImage.height);
+      this.styleWidth = this.styleImage.width * ratio;
+      this.styleHeight = this.styleImage.height * ratio;
     },
     setDrag: function() {
       this.drag = true;
@@ -126,5 +152,8 @@ var main = new Vue({
       this.canvasImage = this.canvas.toDataURL();
       this.setImageOnCanvas(this.canvas.toDataURL());
     },
+    filterStyleImages: function() {
+      this.styleImages = this.images.filter(img => img.subdirectory == 'style');
+    }
   }
 })

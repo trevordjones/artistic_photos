@@ -47,23 +47,7 @@ def artistic():
         flash('No starting image selected', 'danger')
         return redirect(url_for('home.main'))
     starting_image = Image.query.get(request.values['starting_id'])
-    if request.files['style'].filename:
-        img = request.files['style']
-        image = Image.upload_to_gcp(img, 'style')
-        img.seek(0)
-        img_bytes = BytesIO(img.stream.read())
-        img = PILImage.open(img_bytes)
-        width, height = img.size
-        image.user_id = current_user.id
-        image.width = width
-        image.height = height
-        image.starting_image_id = rqeuest.values['starting_id']
-        image.save()
-        if KAGGLE_ENABLED:
-            kaggle.nst(starting_image.source_name, image.source_name, 'random')
-            subprocess.run([f'kaggle kernels push -p {ROOT.joinpath("temp")}/'], shell=True)
-            Path(ROOT.joinpath('temp/nst.py')).unlink(missing_ok=True)
-            Path(ROOT.joinpath('temp/kernel-metadata.json')).unlink(missing_ok=True)
+    style_image = Image.query.get(request.values['style_id'])
     if request.values['canvas_image']:
         pattern = re.compile('data:image/(png|jpeg);base64,(.*)$')
         img_bytes = pattern.match(request.values['canvas_image']).group(2)
@@ -84,5 +68,20 @@ def artistic():
             subprocess.run([f'kaggle kernels push -p {ROOT.joinpath("temp")}/'], shell=True)
             Path(ROOT.joinpath('temp/blur.py')).unlink(missing_ok=True)
             Path(ROOT.joinpath('temp/kernel-metadata.json')).unlink(missing_ok=True)
+@image_bp.route('/images/style', methods=['POST'])
+@login_required
+def style():
+    if request.files['style'].filename:
+        img = request.files['style']
+        style_image = Image.upload_to_gcp(img, 'style')
+        img.seek(0)
+        img_bytes = BytesIO(img.stream.read())
+        img = PILImage.open(img_bytes)
+        width, height = img.size
+        style_image.user_id = current_user.id
+        style_image.width = width
+        style_image.height = height
+        style_image.save()
 
+    flash('Style image uploaded', 'success')
     return redirect(url_for('home.main'))
