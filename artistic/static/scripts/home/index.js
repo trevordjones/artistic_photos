@@ -2,6 +2,9 @@ var main = new Vue({
   el: '#home',
   delimiters: ['[[', ']]'],
   data: {
+    showStartingImage: true,
+    showPalette: false,
+    showEdit: false,
     image: {},
     images: [],
     selected_id: null,
@@ -42,6 +45,11 @@ var main = new Vue({
       .then(response => this.palettes = response.body.palettes)
   },
   methods: {
+    setTab: function(tabName) {
+      this.showStartingImage = tabName == 'startingImage';
+      this.showPalette = tabName == 'palette';
+      this.showEdit = tabName == 'edit';
+    },
     setImageOnCanvas: function(imageUrl) {
       if (imageUrl) {
         this.canvas.toDataURL(imageUrl);
