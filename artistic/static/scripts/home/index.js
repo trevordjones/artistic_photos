@@ -64,7 +64,6 @@ var main = new Vue({
       if (imageUrl) {
         this.canvas.toDataURL(imageUrl);
       } else {
-        console.log(this.image.url);
         this.canvas.toDataURL(this.image.url);
       }
       this.rect = this.canvas.getBoundingClientRect();
