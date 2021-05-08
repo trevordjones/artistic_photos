@@ -62,6 +62,7 @@ def artistic():
     resp = ArtisticPhoto(
         request.form['action'],
         starting_image,
+        artistic_name=request.form['artistic_name'],
         outline_image=outline_image,
         style_image=style_image,
         ).create()
