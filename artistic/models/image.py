@@ -13,6 +13,7 @@ ROOT = Path(__file__).parent.parent
 FILE_PATH = ROOT.joinpath('temp')
 STATIC_PATH = ROOT.joinpath('static')
 STORAGE_BUCKET = os.getenv('STORAGE_BUCKET')
+GCP_URL = os.getenv('GCP_URL')
 
 
 class Image(Base):
@@ -71,6 +72,9 @@ class Image(Base):
         download_blob = bucket.blob(file_name)
         to_file = STATIC_PATH.joinpath(f'img/{self.source_name}')
         download_blob.download_to_filename(to_file)
+
+    def gcp_link(self):
+        return f'{GCP_URL}/{STORAGE_BUCKET}/{self.subdirectory}/{self.source_name}'
 
     def json(self):
         return {
