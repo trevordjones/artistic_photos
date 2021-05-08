@@ -35,7 +35,7 @@ def blur(outline_image, starting_image):
     outline_image_name = outline_image.source_name
     bucket_name = STORAGE_BUCKET
     saved_image_name = f'{binascii.b2a_hex(os.urandom(5)).decode("utf-8")}.png'
-    destination_blob_name = f'generated/{saved_image_name}'
+    destination_blob_name = f'artistic/{saved_image_name}'
     upload_file_name = f'./{saved_image_name}'
 
     with open(f'{KAGGLE_PATH.joinpath("blur.py")}', 'w') as file:

@@ -38,12 +38,11 @@ def show(id):
 @authenticate_by_token
 def create():
     json_image = request.json['image']
-    json_image['subdirectory'] = 'generated'
     image = Image(
         user_id=json_image['user_id'],
         name=json_image['name'],
         source_name=json_image['source_name'],
-        subdirectory='generated',
+        subdirectory='artistic',
         width=json_image['width'],
         height=json_image['height'],
         starting_image_id=json_image['starting_image_id'],
