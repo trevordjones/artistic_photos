@@ -36,6 +36,7 @@ def create_app(test_config=None):
     app.config['MAIL_USE_TLS'] = True
     app.config['MAIL_USERNAME'] = os.getenv('EMAIL_USER')
     app.config['MAIL_PASSWORD'] = os.getenv('EMAIL_PASS')
+    app.config['MAIL_DEFAULT_SENDER'] = os.getenv('EMAIL_USER')
     mail.init_app(app)
 
     db.init_app(app)
