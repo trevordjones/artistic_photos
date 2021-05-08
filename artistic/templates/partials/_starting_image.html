@@ -1,0 +1,41 @@
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">Starting Image</h5>
+    <div class="row">
+      <div class="col-sm-8">
+        <canvas
+          ref="startingImageCanvas"
+          v-bind:width="[[width]]"
+          v-bind:height="[[height]]"
+          v-on:mousedown="setDrag"
+          v-on:mousemove="dragLine"
+          v-on:mouseup="unsetDrag"
+        > </canvas>
+      </div>
+      <div class="col-sm-4">
+        <div v-bind:style="{width: '18rem', height: cardHeight() + 'rem', 'overflow-y': 'auto'}">
+          <ul class="list-group list-group-flush">
+            <li
+              v-for="(img, index) in images"
+              class="list-group-item"
+              v-bind:class="{active: img.id == selected_id, 'custom-list-group-item': img.id != selected_id}"
+              v-on:click="selectPhoto(img)"
+            >
+              [[img.name]]
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <form id="starting-image" enctype="multipart/form-data" method="post" action="/images/starting">
+        <div class="form-group">
+          <div class="col-sm-12">
+            <input id="fileupload" class="form-control" name="starting" type="file" />
+          </div>
+        </div>
+
+        <input type="submit" value="Create Starting Image" id="submit" class="btn btn-dark" />
+      </form>
+    </div>
+  </div>
+</div>

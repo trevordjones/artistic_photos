@@ -1,0 +1,18 @@
+<h1 class="margin-top mt-5">How would you like to edit your photo?</h1>
+<form id="artistic-image" enctype="multipart/form-data" method="post" action="/images/artistic">
+  <div class="form-group row">
+    <label class="col-sm-12 col-sm-label">Style Photo</label>
+    <div class="col-sm-4">
+      <input id="fileupload" class="form-control" name="style" type="file" />
+    </div>
+  </div>
+
+  <div class="form-check">
+    <input class="form-check-input" name="blur" type="checkbox" value="blur">
+    <label class="form-check-label">Blur</label>
+  </div>
+
+  <input type="hidden" name="canvas_image" v-bind:value="[[canvasImage]]" />
+  <input type="hidden" name="starting_id" v-bind:value="[[selected_id]]"/>
+  <input type="submit" value="Create Artistic Photo" id="submit" class="mt-5 btn btn-primary" />
+</form>
