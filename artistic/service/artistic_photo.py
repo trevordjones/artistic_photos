@@ -1,12 +1,15 @@
 from enum import Enum
 import artistic.kaggle as kaggle
+import artistic.photo as photo
 import os
+import binascii
 
 KAGGLE_ENABLED = bool(os.getenv('KAGGLE_ENABLED'))
 
 
 class ArtisticActions(Enum):
     BLUR = 'blur'
+    PENCIL_SKETCH = 'pencil_sketch'
     NST = 'nst'
 
 class ArtisticPhotoResponse:
@@ -19,9 +22,19 @@ class ArtisticPhotoResponse:
 
 
 class ArtisticPhoto:
-    def __init__(self, action, starting_image, outline_image=None, style_image=None):
+    def __init__(
+            self,
+            action,
+            starting_image,
+            artistic_name=None,
+            outline_image=None,
+            style_image=None):
         self.action = action
         self.starting_image = starting_image
+        if not artistic_name:
+            self.artistic_name = f'{binascii.b2a_hex(os.urandom(5)).decode("utf-8")}'
+        else:
+            self.artistic_name = artistic_name
         self.outline_image = outline_image
         self.style_image = style_image
 
@@ -30,8 +43,12 @@ class ArtisticPhoto:
         if not self.starting_image:
             resp.error = 'Must include a starting image'
             return resp
+        action = ArtisticActions(self.action)
+        if action == ArtisticActions.PENCIL_SKETCH:
+            photo.pencil_sketch(starting_image=self.starting_image, name=self.artistic_name)
+            resp.msg = 'Your sketch has been added'
+
         if KAGGLE_ENABLED:
-            action = ArtisticActions(self.action)
             if action == ArtisticActions.BLUR:
                 if not self.outline_image:
                     resp.error = 'Must draw a border on a starting image'

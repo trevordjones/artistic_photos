@@ -54,6 +54,23 @@ class Image(Base):
         finally:
             os.remove(file_path)
 
+    @classmethod
+    def upload_artistic_photo(cls, file_path, source_name, dims):
+        bucket_name = STORAGE_BUCKET
+        storage_client = storage.Client()
+        bucket = storage_client.bucket(bucket_name)
+        subdirectory = 'artistic'
+        destination_blob_name = f'{subdirectory}/{source_name}'
+        blob = bucket.blob(destination_blob_name)
+        blob.upload_from_filename(file_path)
+        image = cls(
+            source_name=source_name,
+            subdirectory=subdirectory,
+            width=dims[0],
+            height=dims[1],
+            )
+
+        return image
 
     def save(self, file=None, **kwargs):
         if file:
@@ -65,13 +82,14 @@ class Image(Base):
         db.session.add(self)
         db.session.commit()
 
-    def download(self):
+    def download(self, dest=None):
         storage_client = storage.Client()
         bucket = storage_client.bucket(STORAGE_BUCKET)
         file_name = f'{self.subdirectory}/{self.source_name}'
         download_blob = bucket.blob(file_name)
-        to_file = STATIC_PATH.joinpath(f'img/{self.source_name}')
-        download_blob.download_to_filename(to_file)
+        if not dest:
+            dest = STATIC_PATH.joinpath(f'img/{self.source_name}')
+        download_blob.download_to_filename(dest)
 
     def gcp_link(self):
         return f'{GCP_URL}/{STORAGE_BUCKET}/{self.subdirectory}/{self.source_name}'
