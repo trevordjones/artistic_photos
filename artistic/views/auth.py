@@ -1,14 +1,14 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import LoginManager, current_user, login_user, logout_user
-from flask_mail import Mail, Message
+from flask_mail import Message
 from passlib.hash import sha256_crypt
 
 from artistic.db import db
+from artistic.mail import mail
 from artistic.models.user import User
 
 auth_bp = Blueprint('auth', __name__)
 login_manager = LoginManager()
-mail = Mail()
 
 @login_manager.user_loader
 def load_user(user_id):

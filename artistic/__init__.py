@@ -13,6 +13,7 @@ from flask_migrate import Migrate
 import os
 
 from artistic.db import db
+from artistic.mail import mail
 from artistic.routes import routes
 from artistic.views.auth import login_manager, mail
 
