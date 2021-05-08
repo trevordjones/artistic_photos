@@ -7,16 +7,11 @@ import re
 from flask_login import current_user, login_required
 from io import BytesIO
 import os
-from pathlib import Path
 import re
-import subprocess
 from werkzeug.datastructures import FileStorage
+from artistic.service.artistic_photo import ArtisticPhoto
 
-import artistic.kaggle as kaggle
 from artistic.models.image import Image
-
-ROOT = Path(__file__).parent.parent
-KAGGLE_ENABLED = os.getenv('KAGGLE_ENABLED', default=False)
 
 
 image_bp = Blueprint('images', __name__)
@@ -47,27 +42,38 @@ def artistic():
         flash('No starting image selected', 'danger')
         return redirect(url_for('home.main'))
     starting_image = Image.query.get(request.values['starting_id'])
-    style_image = Image.query.get(request.values['style_id'])
+    outline_image = None
+    style_image = None
+    if request.values['style_id']:
+        style_image = Image.query.get(request.values['style_id'])
     if request.values['canvas_image']:
         pattern = re.compile('data:image/(png|jpeg);base64,(.*)$')
         img_bytes = pattern.match(request.values['canvas_image']).group(2)
         binary_data = a2b_base64(img_bytes)
         img = FileStorage(BytesIO(binary_data), 'outline.png')
-        image = Image.upload_to_gcp(img, 'starting')
+        outline_image = Image.upload_to_gcp(img, 'starting')
         img = PILImage.open(BytesIO(binary_data))
         width, height = img.size
-        image.user_id = current_user.id
-        image.width = width
-        image.height = height
-        image.starting_image_id = request.values['starting_id']
-        image.save()
-    if request.values['blur']:
-        starting_image = Image.query.get(request.values['starting_id'])
-        if KAGGLE_ENABLED:
-            kaggle.blur(outline_image=image, starting_image=starting_image)
-            subprocess.run([f'kaggle kernels push -p {ROOT.joinpath("temp")}/'], shell=True)
-            Path(ROOT.joinpath('temp/blur.py')).unlink(missing_ok=True)
-            Path(ROOT.joinpath('temp/kernel-metadata.json')).unlink(missing_ok=True)
+        outline_image.user_id = current_user.id
+        outline_image.width = width
+        outline_image.height = height
+        outline_image.starting_image_id = starting_image.id
+        outline_image.save()
+
+
+    resp = ArtisticPhoto(
+        request.form['action'],
+        starting_image,
+        outline_image=outline_image,
+        style_image=style_image,
+        ).create()
+
+    if resp.is_valid():
+        flash(resp.msg, 'success')
+    else:
+        flash(resp.error, 'danger')
+    return redirect(url_for('home.main'))
+
 @image_bp.route('/images/style', methods=['POST'])
 @login_required
 def style():

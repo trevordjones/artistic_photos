@@ -2,11 +2,13 @@
   <div class="card-body">
     <h5 class="card-title">How would you like to edit your photo?</h1>
     <form id="artistic-image" enctype="multipart/form-data" method="post" action="/images/artistic">
+      <div class="custom-control custom-radio">
+        <input type="radio" id="radio-nst" name="action" value="nst" class="custom-control-input">
+        <label class="custom-control-label" for="radio-nst">Transfer Style</label>
       </div>
-
-      <div class="form-check">
-        <input class="form-check-input" name="blur" type="checkbox" value="blur">
-        <label class="form-check-label">Blur</label>
+      <div class="custom-control custom-radio">
+        <input type="radio" id="radio-blur" name="action" value="blur" class="custom-control-input">
+        <label class="custom-control-label" for="radio-blur">Blur</label>
       </div>
 
       <input type="hidden" name="canvas_image" v-bind:value="[[canvasImage]]" />
