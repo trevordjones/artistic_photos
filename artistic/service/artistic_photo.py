@@ -32,8 +32,9 @@ class ArtisticPhoto:
             style_image=None):
         self.action = action
         self.starting_image = starting_image
+        self.source_name = f'{binascii.b2a_hex(os.urandom(5)).decode("utf-8")}'
         if not artistic_name:
-            self.artistic_name = f'{binascii.b2a_hex(os.urandom(5)).decode("utf-8")}'
+            self.artistic_name = self.source_name
         else:
             self.artistic_name = artistic_name
         self.outline_image = outline_image
@@ -48,15 +49,20 @@ class ArtisticPhoto:
         if action == ArtisticActions.PENCIL_SKETCH:
             photo.pencil_sketch(starting_image=self.starting_image, name=self.artistic_name)
             resp.msg = 'Your sketch has been added'
+        elif action == ArtisticActions.BLUR:
+            if not self.outline_image:
+                resp.error = 'Must draw an outline on a starting image'
+            else:
+                photo.blur(
+                    starting_image=self.starting_image,
+                    outline_image=self.outline_image,
+                    name=self.artistic_name,
+                    source_name=self.source_name,
+                    )
+                resp.msg = 'Your blurred photo has been added'
 
         if KAGGLE_ENABLED:
-            if action == ArtisticActions.BLUR:
-                if not self.outline_image:
-                    resp.error = 'Must draw a border on a starting image'
-                else:
-                    kaggle.blur(outline_image=self.outline_image, starting_image=self.starting_image)
-                    resp.msg = 'Blurring your photo'
-            elif action == ArtisticActions.NST:
+            if action == ArtisticActions.NST:
                 if not self.style_image:
                     resp.error = 'Must select a style image'
                 else:
