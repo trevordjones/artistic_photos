@@ -1,12 +1,13 @@
 from flask import Blueprint, redirect, request, url_for
 from flask_login import current_user, login_required
-from flask_sqlalchemy import sqlalchemy
 from flask_mail import Message
-from artistic.mail import mail
+from flask_sqlalchemy import sqlalchemy
 import os
+
+from artistic.mail import mail
+from artistic.models import Image, User
 from artistic.views.api.v1.authenticate import authenticate_by_token
 
-from artistic.models import Image, User
 HTTP = os.getenv('HTTP_PROTOCOL')
 BASE_URL = os.getenv('BASE_URL')
 

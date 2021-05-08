@@ -2,17 +2,15 @@ from PIL import Image as PILImage
 import binascii
 from binascii import a2b_base64
 import codecs
-from flask import Blueprint, redirect, render_template, request, url_for, flash
-import re
+from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from io import BytesIO
 import os
 import re
 from werkzeug.datastructures import FileStorage
-from artistic.service.artistic_photo import ArtisticPhoto
 
 from artistic.models.image import Image
-
+from artistic.service.artistic_photo import ArtisticPhoto
 
 image_bp = Blueprint('images', __name__)
 @image_bp.route('/images/starting', methods=['POST'])

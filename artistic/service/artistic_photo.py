@@ -1,8 +1,9 @@
+import binascii
 from enum import Enum
+import os
+
 import artistic.kaggle as kaggle
 import artistic.photo as photo
-import os
-import binascii
 
 KAGGLE_ENABLED = bool(os.getenv('KAGGLE_ENABLED'))
 

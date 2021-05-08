@@ -1,5 +1,6 @@
-import os
 from flask_mail import Mail
+import os
+
 
 class DefaultSender():
     def default_sender(self):

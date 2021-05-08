@@ -1,8 +1,9 @@
+from pathlib import Path
+import subprocess
+
 from artistic.kaggle.blur import blur
 from artistic.kaggle.nst import nst
 from artistic.kaggle.palette import palette
-import subprocess
-from pathlib import Path
 
 ROOT = Path(__file__).parent.parent
 

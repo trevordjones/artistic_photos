@@ -1,8 +1,9 @@
-import cv2
-import os
-import numpy as np
 import binascii
+import cv2
+import numpy as np
+import os
 from pathlib import Path
+
 from artistic.models import Image
 
 ROOT = Path(__file__).parent
