@@ -21,7 +21,7 @@ def create():
             file = request.files['color_palette']
             file_path = f'{PHOTO_PATH}/palette.png'
             file.save(file_path)
-            hex_values = photo.palette(file_path)
+            hex_values = photo.palette(file_path, int(request.form['number']))
 
             palette = Palette(
                 hex_values=hex_values,

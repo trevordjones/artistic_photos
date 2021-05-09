@@ -10,8 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).parent
 FILE_PATH = ROOT.joinpath('temp')
 
-def palette(starting_path):
-    num_palettes = 6
+def palette(starting_path, num_palettes=6):
     image_size = 100
 
     img = imread(str(starting_path))

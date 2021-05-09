@@ -177,6 +177,10 @@ var main = new Vue({
     filterImages: function() {
       this.styleImages = this.images.filter(img => img.subdirectory == 'style');
       this.artisticImages = this.images.filter(img => img.subdirectory == 'artistic');
+    },
+    paletteWidth: function() {
+      const maxWidth = 600;
+      return maxWidth / this.palette.hex_values.length;
     }
   }
 })

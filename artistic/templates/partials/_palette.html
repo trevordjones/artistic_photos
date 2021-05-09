@@ -5,12 +5,12 @@
       <div class="col-sm-8">
         <div
           v-for="(hex, index) in palette.hex_values"
-          v-bind:style="{background: hex, width: '100px', height: '150px', float: 'left'}"
+          v-bind:style="{background: hex, width: paletteWidth() + 'px', height: '150px', float: 'left'}"
         >
         </div>
       </div>
       <div class="col-sm-4">
-        <div v-bind:style="{width: '18rem', height: cardHeight() + 'rem', 'overflow-y': 'auto'}">
+        <div v-bind:style="{width: '18rem', height: '18rem', 'overflow-y': 'auto'}">
           <ul class="list-group list-group-flush">
             <li
               v-for="(plt, index) in palettes"
