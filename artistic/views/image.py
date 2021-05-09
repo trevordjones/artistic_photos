@@ -59,13 +59,13 @@ def artistic():
         outline_image.save()
 
 
-    resp = ArtisticPhoto(
+    resp, artistic_image = ArtisticPhoto(
         request.form['action'],
         starting_image,
-        artistic_name=request.form['artistic_name'],
         outline_image=outline_image,
         style_image=style_image,
         ).create()
+    artistic_image.save(user_id=current_user.id, name=request.form['artistic_name'])
 
     if resp.is_valid():
         flash(resp.msg, 'success')

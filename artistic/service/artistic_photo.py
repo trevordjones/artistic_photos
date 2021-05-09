@@ -27,36 +27,34 @@ class ArtisticPhoto:
             self,
             action,
             starting_image,
-            artistic_name=None,
             outline_image=None,
             style_image=None):
         self.action = action
         self.starting_image = starting_image
         self.source_name = f'{binascii.b2a_hex(os.urandom(5)).decode("utf-8")}'
-        if not artistic_name:
-            self.artistic_name = self.source_name
-        else:
-            self.artistic_name = artistic_name
         self.outline_image = outline_image
         self.style_image = style_image
 
     def create(self):
         resp = ArtisticPhotoResponse()
+        image = None
         if not self.starting_image:
             resp.error = 'Must include a starting image'
             return resp
         action = ArtisticActions(self.action)
         if action == ArtisticActions.PENCIL_SKETCH:
-            photo.pencil_sketch(starting_image=self.starting_image, name=self.artistic_name)
+            image = photo.pencil_sketch(
+                starting_image=self.starting_image,
+                source_name=self.source_name,
+                )
             resp.msg = 'Your sketch has been added'
         elif action == ArtisticActions.BLUR:
             if not self.outline_image:
                 resp.error = 'Must draw an outline on a starting image'
             else:
-                photo.blur(
+                image = photo.blur(
                     starting_image=self.starting_image,
                     outline_image=self.outline_image,
-                    name=self.artistic_name,
                     source_name=self.source_name,
                     )
                 resp.msg = 'Your blurred photo has been added'
@@ -70,4 +68,4 @@ class ArtisticPhoto:
                     resp.msg = 'Adding style to your photo'
             if resp.is_valid():
                 kaggle.run(f'{self.action}.py')
-        return resp
+        return (resp, image)

@@ -10,7 +10,7 @@ ROOT = Path(__file__).parent
 FILE_PATH = ROOT.joinpath('temp')
 
 
-def pencil_sketch(starting_image, name):
+def pencil_sketch(starting_image, source_name):
     starting_path = FILE_PATH.joinpath(f'{starting_image.source_name}')
     starting_image.download(starting_path)
     img = cv2.imread(str(starting_path))
@@ -22,7 +22,7 @@ def pencil_sketch(starting_image, name):
 
     sketch = divide.copy()
     sketch = sketch - ((255 - sketch) * 10)
-    source_name = f'{name}.png'
+    source_name = f'{source_name}.png'
     sketch_path = FILE_PATH.joinpath(f'{source_name}')
     cv2.imwrite(str(sketch_path), sketch)
     image = Image.upload_artistic_photo(
@@ -30,7 +30,7 @@ def pencil_sketch(starting_image, name):
         source_name,
         dims=(sketch.shape[0], sketch.shape[1]),
         )
-    image.name = name
     Path(starting_path).unlink()
     Path(sketch_path).unlink()
-    image.save()
+
+    return image

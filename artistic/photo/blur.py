@@ -8,7 +8,7 @@ ROOT = Path(__file__).parent
 FILE_PATH = ROOT.joinpath('temp')
 
 
-def blur(starting_image, outline_image, name, source_name):
+def blur(starting_image, outline_image, source_name):
     starting_path = FILE_PATH.joinpath(f'{starting_image.source_name}')
     outline_path = FILE_PATH.joinpath(f'{outline_image.source_name}')
     starting_image.download(starting_path)
@@ -45,8 +45,8 @@ def blur(starting_image, outline_image, name, source_name):
         source_name,
         dims=(blurred.shape[0], blurred.shape[1]),
         )
-    image.name = name
     Path(starting_path).unlink()
     Path(outline_path).unlink()
     Path(blur_path).unlink()
-    image.save()
+
+    return image
