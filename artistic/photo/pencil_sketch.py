@@ -28,7 +28,7 @@ def pencil_sketch(starting_image, source_name):
     image = Image.upload_artistic_photo(
         sketch_path,
         source_name,
-        dims=(sketch.shape[0], sketch.shape[1]),
+        dims=(sketch.shape[1], sketch.shape[0]),
         )
     Path(starting_path).unlink()
     Path(sketch_path).unlink()
