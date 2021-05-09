@@ -2,20 +2,25 @@ var main = new Vue({
   el: '#home',
   delimiters: ['[[', ']]'],
   data: {
+    showArtisticImage: false,
     showStartingImage: true,
     showStyleImage: false,
     showPalette: false,
     showEdit: false,
     image: {},
     styleImage: {},
+    artisticImage: {},
     images: [],
     styleImages: [],
+    artisticImages: [],
     selected_id: null,
     selected_style_id: null,
     width: null,
     height: null,
     styleWidth: null,
     styleHeight: null,
+    artisticWidth: null,
+    artisticHeight: null,
     canvas: {},
     canvasCtx: {},
     rect: {},
@@ -35,7 +40,7 @@ var main = new Vue({
       .get('/api/v1/images')
       .then((response) => {
         this.images = response.body.images
-        this.filterStyleImages();
+        this.filterImages();
       })
     let id = new URL(location.href).searchParams.get('starting');
     if (id != null) {
@@ -55,6 +60,7 @@ var main = new Vue({
   },
   methods: {
     setTab: function(tabName) {
+      this.showArtisticImage = tabName == 'artisticImage';
       this.showStartingImage = tabName == 'startingImage';
       this.showStyleImage = tabName == 'styleImage';
       this.showPalette = tabName == 'palette';
@@ -107,6 +113,14 @@ var main = new Vue({
           this.setStyleDimensions();
         })
     },
+    selectArtisticPhoto: function(img) {
+      this.$http
+        .get(`/api/v1/images/download/${img.id}`)
+        .then((response) => {
+          this.artisticImage = img;
+          this.setArtisticDimensions();
+        })
+    },
     selectPalette: function(plt) {
       this.selected_plt_id = plt.id;
       this.palette = plt;
@@ -124,6 +138,15 @@ var main = new Vue({
       let ratio = Math.min(maxWidth / this.styleImage.width, maxHeight / this.styleImage.height);
       this.styleWidth = this.styleImage.width * ratio;
       this.styleHeight = this.styleImage.height * ratio;
+    },
+    setArtisticDimensions: function() {
+      const maxWidth = 600;
+      const maxHeight = 600;
+      let ratio = Math.min(maxWidth / this.artisticImage.width, maxHeight / this.artisticImage.height);
+      // this.artisticWidth = this.artisticImage.width * ratio;
+      // this.artisticHeight = this.artisticImage.height * ratio;
+      this.artisticWidth = this.artisticImage.width;
+      this.artisticHeight = this.artisticImage.height;
     },
     setDrag: function() {
       this.drag = true;
@@ -151,8 +174,9 @@ var main = new Vue({
       this.canvasImage = this.canvas.toDataURL();
       this.setImageOnCanvas(this.canvas.toDataURL());
     },
-    filterStyleImages: function() {
+    filterImages: function() {
       this.styleImages = this.images.filter(img => img.subdirectory == 'style');
+      this.artisticImages = this.images.filter(img => img.subdirectory == 'artistic');
     }
   }
 })
