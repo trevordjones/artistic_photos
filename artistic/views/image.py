@@ -17,20 +17,27 @@ image_bp = Blueprint('images', __name__)
 @login_required
 def starting():
     img = request.files['starting']
-    if img.filename:
-        image = Image.upload_to_gcp(img, 'starting')
-        img.seek(0)
-        img_bytes = BytesIO(img.stream.read())
-        img = PILImage.open(img_bytes)
-        width, height = img.size
-        image.user_id = current_user.id
-        image.width = width
-        image.height = height
-        image.save()
-        image.download()
+    if request.form['image_name']:
+        if img.filename:
+            image = Image.upload_to_gcp(img, 'starting')
+            img.seek(0)
+            img_bytes = BytesIO(img.stream.read())
+            img = PILImage.open(img_bytes)
+            width, height = img.size
+            image.save(
+                user_id=current_user.id,
+                width=width,
+                height=height,
+                name=request.form['image_name'],
+                )
+            image.download()
 
-        return redirect(url_for('home.main', starting=image.id))
+            return redirect(url_for('home.main', starting=image.id))
+        else:
+            flash('Please upload an image', 'danger')
+            return redirect(url_for('home.main'))
     else:
+        flash('Please enter a name', 'danger')
         return redirect(url_for('home.main'))
 
 @image_bp.route('/images/artistic', methods=['POST'])
@@ -52,12 +59,12 @@ def artistic():
         outline_image = Image.upload_to_gcp(img, 'starting')
         img = PILImage.open(BytesIO(binary_data))
         width, height = img.size
-        outline_image.user_id = current_user.id
-        outline_image.width = width
-        outline_image.height = height
-        outline_image.starting_image_id = starting_image.id
-        outline_image.save()
-
+        outline_image.save(
+            user_id=current_user.id,
+            width=width,
+            height=height,
+            starting_image_id=starting_image.id,
+            )
 
     resp, artistic_image = ArtisticPhoto(
         request.form['action'],
@@ -83,10 +90,11 @@ def style():
         img_bytes = BytesIO(img.stream.read())
         img = PILImage.open(img_bytes)
         width, height = img.size
-        style_image.user_id = current_user.id
-        style_image.width = width
-        style_image.height = height
-        style_image.save()
+        style_image.save(
+            user_id=current_user.id,
+            width=width,
+            height=height,
+        )
 
     flash('Style image uploaded', 'success')
     return redirect(url_for('home.main'))

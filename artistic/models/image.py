@@ -31,7 +31,7 @@ class Image(Base):
     palettes = relationship('Palette', lazy='dynamic')
 
     @classmethod
-    def upload_to_gcp(cls, file, subdirectory, image_name=None):
+    def upload_to_gcp(cls, file, subdirectory):
         try:
             file_path = f'{FILE_PATH}/{file.filename}'
             file.save(file_path)
@@ -46,7 +46,6 @@ class Image(Base):
             image = cls(
                 source_name=gcp_source_name,
                 subdirectory=subdirectory,
-                name=image_name,
                 )
             return image
         except:

@@ -21,6 +21,7 @@ def create():
         palette.save(
             file=file,
             user_id=current_user.id,
+            name=request.values['palette_name'],
             )
         if KAGGLE_ENABLED:
             kaggle.palette(
