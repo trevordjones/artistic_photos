@@ -68,9 +68,13 @@ class ArtisticPhoto:
             resp.msg = 'Your sharpened photo has been added'
         elif action == ArtisticActions.BLACK_AND_WHITE:
             if not self.outline_image:
-                resp.error = 'Must draw an outline on a starting image'
-            else:
                 image = photo.black_and_white(
+                    starting_image=self.starting_image,
+                    source_name=self.source_name,
+                )
+                resp.msg = 'Your black and white photo has been added'
+            else:
+                image = photo.black_and_white_outline(
                     starting_image=self.starting_image,
                     outline_image=self.outline_image,
                     source_name=self.source_name,

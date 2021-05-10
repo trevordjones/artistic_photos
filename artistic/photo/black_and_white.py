@@ -7,7 +7,29 @@ from artistic.models import Image
 ROOT = Path(__file__).parent
 FILE_PATH = ROOT.joinpath('temp')
 
-def black_and_white(starting_image, outline_image, source_name):
+def black_and_white(starting_image, source_name):
+    starting_path = FILE_PATH.joinpath(f'{starting_image.source_name}')
+    starting_image.download(starting_path)
+
+    originalImage = cv2.imread(str(starting_path))
+    grayImage = cv2.cvtColor(originalImage, cv2.COLOR_BGR2GRAY)
+  
+    (thresh, blackAndWhiteImage) = cv2.threshold(grayImage, 100, 255, cv2.THRESH_BINARY)
+
+    source_name = f'{source_name}.png'
+    bnw_path = FILE_PATH.joinpath(f'{source_name}')
+    cv2.imwrite(str(bnw_path), blackAndWhiteImage)
+    image = Image.upload_artistic_photo(
+        bnw_path,
+        source_name,
+        dims=(blackAndWhiteImage.shape[1], blackAndWhiteImage.shape[0]),
+        )
+    Path(starting_path).unlink()
+    Path(bnw_path).unlink()
+
+    return image
+
+def black_and_white_outline(starting_image, outline_image, source_name):
     starting_path = FILE_PATH.joinpath(f'{starting_image.source_name}')
     outline_path = FILE_PATH.joinpath(f'{outline_image.source_name}')
     starting_image.download(starting_path)
