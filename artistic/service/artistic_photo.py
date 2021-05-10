@@ -12,6 +12,7 @@ class ArtisticActions(Enum):
     BLUR = 'blur'
     PENCIL_SKETCH = 'pencil_sketch'
     NST = 'nst'
+    SHARPEN = 'sharpen'
 
 class ArtisticPhotoResponse:
     def __init__(self):
@@ -58,6 +59,11 @@ class ArtisticPhoto:
                     source_name=self.source_name,
                     )
                 resp.msg = 'Your blurred photo has been added'
+        elif action == ArtisticActions.SHARPEN:
+            image = photo.sharpen(
+                starting_image=self.starting_image, 
+                source_name=self.source_name)
+            resp.msg = 'Your sharpened photo has been added'
 
         if KAGGLE_ENABLED:
             if action == ArtisticActions.NST:
