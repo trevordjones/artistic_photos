@@ -34,8 +34,8 @@
       </div>
 
       <input type="hidden" name="canvas_image" v-bind:value="[[canvasImage]]" />
-      <input type="hidden" name="starting_id" v-bind:value="[[selected_id]]"/>
-      <input type="hidden" name="style_id" v-bind:value="[[selected_style_id]]"/>
+      <input type="hidden" name="starting_id" v-bind:value="[[image.id]]"/>
+      <input type="hidden" name="style_id" v-bind:value="[[styleImage.id]]"/>
       <input type="submit" value="Create Artistic Photo" id="submit" class="mt-5 btn btn-primary" />
     </form>
   </div>

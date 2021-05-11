@@ -14,7 +14,6 @@ var main = new Vue({
     styleImages: [],
     artisticImages: [],
     selected_id: null,
-    selected_style_id: null,
     width: null,
     height: null,
     styleWidth: null,
@@ -48,7 +47,6 @@ var main = new Vue({
         .get(`/api/v1/images/${id}`)
         .then((response) => {
           this.image = response.body.image;
-          this.selected_id = id;
           this.setDimensions();
           this.setImageOnCanvas();
         })
@@ -94,11 +92,10 @@ var main = new Vue({
 
       return this.images.length * 3;
     },
-    selectPhoto: function(img) {
+    selectStartingPhoto: function(img) {
       this.$http
         .get(`/api/v1/images/download/${img.id}`)
         .then((response) => {
-          this.selected_id = img.id;
           this.image = img;
           this.setDimensions();
           this.setImageOnCanvas();
@@ -108,7 +105,6 @@ var main = new Vue({
       this.$http
         .get(`/api/v1/images/download/${img.id}`)
         .then((response) => {
-          this.selected_style_id = img.id;
           this.styleImage = img;
           this.setStyleDimensions();
         })

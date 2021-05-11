@@ -19,8 +19,8 @@
             <li
               v-for="(img, index) in images"
               class="list-group-item"
-              v-bind:class="{active: img.id == selected_id, 'custom-list-group-item': img.id != selected_id}"
-              v-on:click="selectPhoto(img)"
+              v-bind:class="{active: img.id == image.id, 'custom-list-group-item': img.id != image.id}"
+              v-on:click="selectStartingPhoto(img)"
             >
               [[img.name]]
             </li>
