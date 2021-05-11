@@ -43,7 +43,7 @@ def blur(starting_image, outline_image, source_name):
     image = Image.upload_artistic_photo(
         blur_path,
         source_name,
-        dims=(blurred.shape[0], blurred.shape[1]),
+        dims=(blurred.shape[1], blurred.shape[0]),
         )
     Path(starting_path).unlink()
     Path(outline_path).unlink()
