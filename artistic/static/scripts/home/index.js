@@ -22,6 +22,7 @@ var main = new Vue({
     artisticHeight: null,
     canvas: {},
     canvasCtx: {},
+    canvasImageUrl: null,
     rect: {},
     prevX: null,
     prevY: null,
@@ -30,6 +31,13 @@ var main = new Vue({
     palette: {},
     palettes: [],
     selected_plt_id: null,
+  },
+  updated() {
+    if (this.showStartingImage) {
+      this.canvas = this.$refs.startingImageCanvas;
+      this.canvasCtx = this.canvas.getContext('2d');
+      this.setImageOnCanvas(this.canvasImageUrl);
+    }
   },
   mounted() {
     this.canvas = this.$refs.startingImageCanvas;
@@ -66,10 +74,12 @@ var main = new Vue({
     },
     setImageOnCanvas: function(imageUrl) {
       if (imageUrl) {
-        this.canvas.toDataURL(imageUrl);
+        this.canvasImageUrl = imageUrl;
       } else {
-        this.canvas.toDataURL(this.image.url);
+        this.canvasImageUrl = this.image.url;
       }
+
+      this.canvas.toDataURL(this.canvasImageUrl);
       this.rect = this.canvas.getBoundingClientRect();
       let img = new Image();
       const vm = this;
@@ -79,11 +89,8 @@ var main = new Vue({
         vm.canvasCtx.lineWidth = 5;
         vm.canvasCtx.lineCap = 'round';
       }
-      if (imageUrl) {
-        img.src = imageUrl;
-      } else {
-        img.src = this.image.url;
-      }
+
+      img.src = this.canvasImageUrl;
     },
     cardHeight: function() {
       if (this.images.length > 8) {
@@ -139,10 +146,8 @@ var main = new Vue({
       const maxWidth = 600;
       const maxHeight = 600;
       let ratio = Math.min(maxWidth / this.artisticImage.width, maxHeight / this.artisticImage.height);
-      // this.artisticWidth = this.artisticImage.width * ratio;
-      // this.artisticHeight = this.artisticImage.height * ratio;
-      this.artisticWidth = this.artisticImage.width;
-      this.artisticHeight = this.artisticImage.height;
+      this.artisticWidth = this.artisticImage.width * ratio;
+      this.artisticHeight = this.artisticImage.height * ratio;
     },
     setDrag: function() {
       this.drag = true;
