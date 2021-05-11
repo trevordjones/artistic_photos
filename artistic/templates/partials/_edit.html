@@ -9,6 +9,12 @@
       <div class="custom-control custom-radio">
         <input type="radio" id="radio-blur" name="action" value="blur" class="custom-control-input">
         <label class="custom-control-label" for="radio-blur">Blur</label>
+        <input type="range" class="form-range" min="1" max="31" step="3" value="16" id="blur-range" name="blur-range" list="percent">
+        <datalist id="percent">
+          <option value="1" label="0%"></option>
+          <option value="16" label="50%"></option>
+          <option value="31" label="100%"></option>
+        </datalist>
       </div>
       <div class="custom-control custom-radio">
         <input type="radio" id="radio-sharpen" name="action" value="sharpen" class="custom-control-input">

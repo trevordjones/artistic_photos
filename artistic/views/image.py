@@ -71,6 +71,7 @@ def artistic():
         starting_image,
         outline_image=outline_image,
         style_image=style_image,
+        blur_range=request.form['blur-range'],
         ).create()
     artistic_image.save(user_id=current_user.id, name=request.form['artistic_name'])
 

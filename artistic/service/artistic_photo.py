@@ -31,12 +31,14 @@ class ArtisticPhoto:
             action,
             starting_image,
             outline_image=None,
-            style_image=None):
+            style_image=None,
+            blur_range=16):
         self.action = action
         self.starting_image = starting_image
         self.source_name = f'{binascii.b2a_hex(os.urandom(5)).decode("utf-8")}'
         self.outline_image = outline_image
         self.style_image = style_image
+        self.blur_range = blur_range
 
     def create(self):
         resp = ArtisticPhotoResponse()
@@ -59,6 +61,7 @@ class ArtisticPhoto:
                     starting_image=self.starting_image,
                     outline_image=self.outline_image,
                     source_name=self.source_name,
+                    blur_range=self.blur_range,
                     )
                 resp.msg = 'Your blurred photo has been added'
         elif action == ArtisticActions.SHARPEN:
