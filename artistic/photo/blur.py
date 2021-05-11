@@ -8,7 +8,7 @@ ROOT = Path(__file__).parent
 FILE_PATH = ROOT.joinpath('temp')
 
 
-def blur(starting_image, outline_image, source_name):
+def blur(starting_image, outline_image, source_name, blur_range):
     starting_path = FILE_PATH.joinpath(f'{starting_image.source_name}')
     outline_path = FILE_PATH.joinpath(f'{outline_image.source_name}')
     starting_image.download(starting_path)
@@ -30,7 +30,7 @@ def blur(starting_image, outline_image, source_name):
     image_binary = np.zeros((filled.shape[0], filled.shape[1], 1), dtype=np.uint8)
     filled = cv2.drawContours(image_binary, [max(contours, key = cv2.contourArea)], -1, 255, thickness=-1)
 
-    blurred = cv2.blur(img, (30,30))
+    blurred = cv2.blur(img, (int(blur_range), int(blur_range)))
     for ridx, row in enumerate(img):
         for cidx, column in enumerate(row):
             if filled[ridx][cidx][0] == 255:
