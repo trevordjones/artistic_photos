@@ -13,6 +13,8 @@ class ArtisticActions(Enum):
     PENCIL_SKETCH = 'pencil_sketch'
     NST = 'nst'
     SHARPEN = 'sharpen'
+    BLACK_AND_WHITE = 'black_and_white'
+    
 
 class ArtisticPhotoResponse:
     def __init__(self):
@@ -64,6 +66,20 @@ class ArtisticPhoto:
                 starting_image=self.starting_image, 
                 source_name=self.source_name)
             resp.msg = 'Your sharpened photo has been added'
+        elif action == ArtisticActions.BLACK_AND_WHITE:
+            if not self.outline_image:
+                image = photo.black_and_white(
+                    starting_image=self.starting_image,
+                    source_name=self.source_name,
+                )
+                resp.msg = 'Your black and white photo has been added'
+            else:
+                image = photo.black_and_white_outline(
+                    starting_image=self.starting_image,
+                    outline_image=self.outline_image,
+                    source_name=self.source_name,
+                )
+                resp.msg = 'Your black and white photo has been added'
 
         if KAGGLE_ENABLED:
             if action == ArtisticActions.NST:
