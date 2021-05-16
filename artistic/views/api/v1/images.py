@@ -16,7 +16,7 @@ images_bp = Blueprint('api.v1.images', __name__)
 @images_bp.route('/api/v1/images', methods=['GET'])
 @login_required
 def index():
-    images = [image.json() for image in current_user.images]
+    images = [image.json() for image in current_user.images if image.is_visible]
     return {'images': images}
 
 @images_bp.route('/api/v1/images/download/<id>', methods=['GET'])
@@ -34,6 +34,22 @@ def show(id):
         return {'image': image.json()}
     except sqlalchemy.exc.NoResultFound:
         return {'image': {}}
+
+@images_bp.route('/api/v1/images/<id>/make_visible', methods=['PUT'])
+@authenticate_by_token
+def make_visible(id):
+    image = Image.query.get(id)
+    image.visible = True
+    image.save
+    msg = Message('Photo Complete', recipients=[image.user.email])
+    link = f'{HTTP}://{BASE_URL}?starting_id={image.id}'
+    msg.html = f'''
+        <h2>Your Artistic Photo is complete!</h2>
+        <p><a href="{link}">Click here</a> to be taken to your photo</p>
+        <p>Or <a href="{image.gcp_link()}">click here</a> to download your photo</p>
+        '''
+    mail.send(msg)
+    return {'image': image.json()}
 
 @images_bp.route('/api/v1/images', methods=['POST'])
 @authenticate_by_token

@@ -26,9 +26,11 @@ class Image(Base):
     width = db.Column(db.Integer)
     height = db.Column(db.Integer)
     starting_image_id = db.Column(db.Integer, db.ForeignKey('images.id'))
+    is_visible = db.Column(db.Boolean, server_default='true')
     starting_image = relationship('Image', remote_side=[id])
     artistic_images = relationship('Image', lazy='dynamic')
-    palettes = relationship('Palette', lazy='dynamic')
+    palette = relationship('Palette', uselist=False, back_populates="image")
+    user = relationship('User', uselist=False, back_populates="images")
 
     @classmethod
     def upload_to_gcp(cls, file, subdirectory):
