@@ -28,6 +28,17 @@
         <input type="radio" id="radio-pencil-sketch" name="action" value="pencil_sketch" class="custom-control-input">
         <label class="custom-control-label" for="radio-pencil-sketch">Pencil Sketch</label>
       </div>
+      <div class="custom-control custom-radio">
+        <input
+          v-on:click="togglePaletteMapping"
+          type="radio"
+          id="radio-transfer-color"
+          name="action"
+          value="transfer_color"
+          class="custom-control-input"
+        >
+        <label class="custom-control-label" for="radio-transfer-color">Transfer Colors</label>
+      </div>
       <div class="form-group mt-5">
         <div class="col-sm-4">
           <input type="text" name="artistic_name" class="form-control" placeholder="Artistic Photo Name" />
@@ -36,7 +47,13 @@
       <input type="hidden" name="canvas_image" v-bind:value="[[canvasImage]]" />
       <input type="hidden" name="starting_id" v-bind:value="[[image.id]]"/>
       <input type="hidden" name="style_id" v-bind:value="[[styleImage.id]]"/>
+      <input type="hidden" name="hex_values" v-bind:value="[[hexValues.join(',')]]"/>
+      <input type="hidden" name="palette_id" v-bind:value="[[palette.id]]"/>
       <input type="submit" value="Create Artistic Photo" id="submit" class="mt-5 btn btn-primary" />
     </form>
   </div>
+</div>
+
+<div v-if="showPaletteMapping">
+  {% include 'partials/modals/_palette_mapping.html' %}
 </div>

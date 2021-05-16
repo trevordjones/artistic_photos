@@ -9,7 +9,7 @@ import os
 import re
 from werkzeug.datastructures import FileStorage
 
-from artistic.models.image import Image
+from artistic.models import Image, Palette
 from artistic.service.artistic_photo import ArtisticPhoto
 
 image_bp = Blueprint('images', __name__)
@@ -66,14 +66,24 @@ def artistic():
             starting_image_id=starting_image.id,
             )
 
+    hex_value_map = None
+    palette = None
+    if request.form['hex_values']:
+        hex_value_map = [v.split('-') for v in request.form['hex_values'].split(',')]
+    if request.form['palette_id']:
+        palette = Palette.query.get(request.form['palette_id'])
     resp, artistic_image = ArtisticPhoto(
         request.form['action'],
         starting_image,
         outline_image=outline_image,
         style_image=style_image,
         blur_range=request.form['blur-range'],
+        hex_value_map=hex_value_map,
+        palette=palette,
         ).create()
-    artistic_image.save(user_id=current_user.id, name=request.form['artistic_name'])
+    artistic_image.user_id = current_user.id
+    artistic_image.name = request.form['artistic_name']
+    artistic_image.save()
 
     if resp.is_valid():
         flash(resp.msg, 'success')

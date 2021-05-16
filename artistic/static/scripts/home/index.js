@@ -31,6 +31,11 @@ var main = new Vue({
     palette: {},
     palettes: [],
     selected_plt_id: null,
+    showPaletteMapping: false,
+    fromHtmlHexes: null,
+    targetHtmlHexes: null,
+    paletteSelections: [],
+    hexValues: [],
   },
   updated() {
     if (this.showStartingImage) {
@@ -182,6 +187,94 @@ var main = new Vue({
     paletteWidth: function() {
       const maxWidth = 600;
       return maxWidth / this.palette.hex_values.length;
+    },
+    togglePaletteMapping: function() {
+      this.showPaletteMapping = !this.showPaletteMapping;
+      if (this.showPaletteMapping) {
+        this.$http
+          .get(`/api/v1/palettes/${this.image.id}/images`)
+          .then((response) => {
+            this.targetPalette = response.body.palette;
+            this.drawPalettes();
+          })
+      }
+    },
+    drawPalettes: function() {
+      const width = 100 - this.palette.hex_values.length
+      this.fromHexWidth = width / this.palette.hex_values.length;
+      this.targetHexWidth = width / this.targetPalette.hex_values.length;
+      let html;
+      this.fromHtmlHexes = [];
+      this.palette.hex_values.forEach(hex => {
+        html = [`<span></span>`, hex];
+        this.fromHtmlHexes.push(html);
+      })
+
+      this.targetHtmlHexes = [];
+      this.targetPalette.hex_values.forEach(hex => {
+        html = ['<span></span>', hex];
+        this.targetHtmlHexes.push(html);
+      })
+    },
+    selectFrom: function(event, hex) {
+      exit = false;
+      this.paletteSelections.forEach((selection, idx) => {
+        if (event.target == selection.from.element) {
+          exit = true;
+          this.fromSelect = null;
+        }
+      })
+
+      if (exit) { return; }
+
+      if (this.fromSelect && this.fromSelect.element == event.target) {
+        event.target.style.outline = null;
+        this.fromSelect = null;
+      } else {
+        event.target.style.outline = "4px solid #333";
+        if (this.fromSelect) {
+          this.fromSelect.element.style.outline = null;
+        }
+        console.log(hex)
+        this.fromSelect = {element: event.target, hex: hex};
+      }
+    },
+    selectTarget: function(event, hex) {
+      exit = false;
+      this.paletteSelections.forEach((selection, idx) => {
+        if (selection.target == event.target) {
+          if (this.fromSelect) {
+            exit = true;
+          } else {
+            selection.from.element.style.outline = "thick solid #333";
+            selection.target.style.outline = null;
+            this.fromSelect = selection.from;
+            this.paletteSelections.splice(idx, 1);
+            this.hexValues.splice(idx, 1);
+            exit = true;
+          }
+        }
+      });
+
+      if (exit || !(this.fromSelect)) { return; }
+
+      if (this.targetSelect == event.target) {
+        event.target.style.outline = null;
+        this.targetSelect = null;
+        this.fromSelect.element.style.outline = "thick solid #333";
+      } else {
+        event.target.style.outline = `thick solid ${this.fromSelect.hex}`;
+        this.fromSelect.element.style.outline = `thick solid ${hex}`;
+        this.paletteSelections.push(
+          {
+            from: this.fromSelect,
+            target: event.target,
+          },
+        )
+        this.hexValues.push(`${this.fromSelect.hex}-${hex}`)
+
+        this.fromSelect = null;
+      }
     }
   }
 })

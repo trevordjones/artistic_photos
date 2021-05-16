@@ -10,6 +10,12 @@ TOKEN = os.getenv('API_TOKEN')
 
 palettes_bp = Blueprint('api.v1.palettes', __name__)
 
+@palettes_bp.route('/api/v1/palettes/<id>/images', methods=['GET'])
+@login_required
+def show_by_images(id):
+    palette = Palette.query.filter_by(image_id=id).first()
+    return {'palette': palette.json()}
+
 @palettes_bp.route('/api/v1/palettes', methods=['GET'])
 @login_required
 def index():

@@ -1,0 +1,45 @@
+<transition name="modal">
+  <div class="modal-mask">
+    <div class="modal-wrapper">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Modal title</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>Modal body text goes here.</p>
+            <div class="clearfix">
+              <div class="col-sm-12">
+                <span
+                  v-for="hex in fromHtmlHexes"
+                  v-bind:style="{background: hex[1], width: fromHexWidth + '%', height: '8rem', 'margin-right': '1%'}"
+                  class="float-left"
+                  v-on:click="selectFrom($event, hex[1])"
+                >
+                  <span v-html="hex[0]"></span>
+                </span>
+              </div>
+            </div>
+
+            <div class="col-sm-12 mt-5">
+              <span
+                v-for="hex in targetHtmlHexes"
+                v-bind:style="{background: hex[1], width: targetHexWidth + '%', height: '8rem', 'margin-right': '1%'}"
+                class="float-left"
+                v-on:click="selectTarget($event, hex[1])"
+              >
+                <span v-html="hex[0]"></span>
+              </span>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" v-on:click="togglePaletteMapping">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</transition>
