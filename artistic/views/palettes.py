@@ -1,12 +1,12 @@
+import cv2
 from flask import Blueprint, flash, redirect, request, url_for
 from flask_login import current_user, login_required
 import os
 from pathlib import Path
 import subprocess
 
-import cv2
-import artistic.photo as photo
 from artistic.models import Image, Palette
+import artistic.photo as photo
 
 ROOT = Path(__file__).parent.parent
 PHOTO_PATH = ROOT.joinpath('photo/temp')
