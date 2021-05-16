@@ -18,6 +18,7 @@ class Palette(Base):
     image_id = db.Column(db.Integer, db.ForeignKey('images.id'))
     hex_values = db.Column(ARRAY(sql.String(128)))
     name = db.Column(db.String(128))
+    image = relationship('Image')
 
     def json(self):
         return {
