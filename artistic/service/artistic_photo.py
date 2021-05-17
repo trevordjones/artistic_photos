@@ -48,11 +48,19 @@ class ArtisticPhoto:
             return resp
         action = ArtisticActions(self.action)
         if action == ArtisticActions.PENCIL_SKETCH:
-            image = photo.pencil_sketch(
-                starting_image=self.starting_image,
-                source_name=self.source_name,
+            if not self.outline_image:
+                image = photo.pencil_sketch(
+                    starting_image=self.starting_image,
+                    source_name=self.source_name,
                 )
-            resp.msg = 'Your sketch has been added'
+                resp.msg = 'Your sketch has been added'
+            else:
+                image = photo.pencil_sketch_outline(
+                    starting_image=self.starting_image,
+                    source_name=self.source_name,
+                    outline_image=self.outline_image,
+                )
+                resp.msg = 'Your sketch has been added'
         elif action == ArtisticActions.BLUR:
             if not self.outline_image:
                 resp.error = 'Must draw an outline on a starting image'
