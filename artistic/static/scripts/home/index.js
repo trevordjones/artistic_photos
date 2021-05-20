@@ -36,6 +36,10 @@ var main = new Vue({
     targetHtmlHexes: null,
     paletteSelections: [],
     hexValues: [],
+    nstOption: 1,
+    nstOptions: [1, 2, 3, 4, 5],
+    showNstOptions: false,
+    showNstHelp: false,
   },
   updated() {
     if (this.showStartingImage) {

@@ -80,6 +80,7 @@ def artistic():
         blur_range=request.form['blur-range'],
         hex_value_map=hex_value_map,
         palette=palette,
+        nst_option=request.form['nst-option'],
         ).create()
     artistic_image.user_id = current_user.id
     artistic_image.name = request.form['artistic_name']

@@ -1,17 +1,42 @@
+from enum import Enum
 import json
 import os
 from pathlib import Path
 import textwrap
 
-ROOT = Path(__file__).parent
+from artistic.models import Image
+
+ROOT = Path(__file__).parent.parent
 KAGGLE_PATH = ROOT.joinpath('temp')
 KAGGLE_USER = os.getenv('KAGGLE_USER')
 KAGGLE_SLUG = os.getenv('KAGGLE_SLUG')
 KAGGLE_GPU_ENABLED = os.getenv('KAGGLE_GPU_ENABLED')
 STORAGE_BUCKET = os.getenv('STORAGE_BUCKET')
+APP_URL = os.getenv('APP_URL')
 
 
-def nst(content_name, style_name, start_as):
+_nst_options = {
+    '1': {'style_weight': 1e-2, 'generated_image': 'content', 'layer': 'block2_conv1'},
+    '2': {'style_weight': 1e-2, 'generated_image': 'random', 'layer': 'block5_conv1'},
+    '3': {'style_weight': 1e-1, 'generated_image': 'content', 'layer': 'block5_conv1'},
+    '4': {'style_weight': 1, 'generated_image': 'content', 'layer': 'block5_conv1'},
+    '5': {'style_weight': 1e2, 'generated_image': 'content', 'layer': 'block5_conv1'},
+}
+
+
+def nst(starting_image, style_name, source_name, option):
+    source_name = f'{source_name}.png'
+    image = Image(
+        user_id=starting_image.user_id,
+        source_name=source_name,
+        subdirectory='artistic',
+        width=starting_image.width,
+        height=starting_image.height,
+        starting_image_id=starting_image.id,
+        is_visible=False,
+        )
+    image.save()
+
     kernel_metadata = {
         'id': f'{KAGGLE_USER}/{KAGGLE_SLUG}',
         'title': KAGGLE_SLUG,
@@ -29,12 +54,13 @@ def nst(content_name, style_name, start_as):
     with open(f'{KAGGLE_PATH.joinpath("kernel-metadata.json")}', 'w') as file:
         json.dump(kernel_metadata, file)
 
-    image_id = content_name.split('-')[0]
-    content_name = f'starting/{content_name}'
+    content_name = f'starting/{starting_image.source_name}'
     style_name = f'style/{style_name}'
-    img_name = f'{image_id}.png'
-    destination_blob_name = f'generated/{img_name}'
-    upload_from_filename = f'./{img_name}'
+    destination_blob_name = f'artistic/{source_name}'
+    upload_from_filename = f'./{source_name}'
+    style_weight = _nst_options[option]['style_weight']
+    generated_image = _nst_options[option]['generated_image']
+    content_layer = _nst_options[option]['layer']
 
     with open(f'{KAGGLE_PATH.joinpath("nst.py")}', 'w') as file:
         file.write(textwrap.dedent('''\
@@ -47,14 +73,15 @@ def nst(content_name, style_name, start_as):
             import numpy as np
             import os, binascii
             from google.cloud import storage
+            import requests
 
             from kaggle_secrets import UserSecretsClient
             user_secrets = UserSecretsClient()
             user_credential = user_secrets.get_gcloud_credential()
             user_secrets.set_tensorflow_credential(user_credential)
             CONTENT_WEIGHT = 1e3
-            STYLE_WEIGHT = 1e-2
-            CONTENT_LAYER_NAME = 'block5_conv2'
+            STYLE_WEIGHT = float("%s")
+            CONTENT_LAYER_NAME = "%s"
             STYLE_LAYER_NAMES = [
                 "block1_conv1",
                 "block2_conv1",
@@ -75,7 +102,7 @@ def nst(content_name, style_name, start_as):
             STYLE_PATH = '-'.join(style_name.split('/'))
             CONTENT_PATH = '-'.join(content_name.split('/'))
             CHANNELS = 3
-            ITERATIONS = 2
+            ITERATIONS = 1000
 
             width, height = keras.preprocessing.image.load_img(CONTENT_PATH).size
             img_width = 600
@@ -201,14 +228,23 @@ def nst(content_name, style_name, start_as):
                 blob = bucket.blob(destination_blob_name)
                 blob.upload_from_filename("%s")
 
+                key = user_secrets.get_secret("API")
+                headers = {'Token': key}
+                requests.put("%s", headers=headers)
+
             run_nst()
             ''' % (
+                style_weight,
+                content_layer,
                 content_name,
                 style_name,
                 STORAGE_BUCKET,
-                start_as,
-                img_name,
+                generated_image,
+                source_name,
                 destination_blob_name,
                 upload_from_filename,
+                f'{APP_URL}/{image.id}/make_visible',
                 )
             ))
+
+    return image

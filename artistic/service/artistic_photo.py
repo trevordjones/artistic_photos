@@ -37,6 +37,7 @@ class ArtisticPhoto:
             hex_value_map=None,
             palette=None,
             blur_range=16,
+            nst_option=None,
             ):
         self.action = action
         self.starting_image = starting_image
@@ -46,6 +47,7 @@ class ArtisticPhoto:
         self.blur_range = blur_range
         self.hex_value_map = hex_value_map
         self.palette = palette
+        self.nst_option = nst_option
 
     def create(self):
         resp = ArtisticPhotoResponse()
@@ -97,7 +99,12 @@ class ArtisticPhoto:
                 if not self.style_image:
                     resp.error = 'Must select a style image'
                 else:
-                    kaggle.nst(self.starting_image.source_name, self.style_image.source_name, 'random')
+                    image = kaggle.nst(
+                        self.starting_image,
+                        self.style_image.source_name,
+                        self.source_name,
+                        self.nst_option,
+                        )
                     resp.msg = 'Adding style to your photo'
             elif action == ArtisticActions.TRANSFER_COLOR:
                 if not self.starting_image.palette:
