@@ -1,11 +1,8 @@
 from PIL import Image as PILImage
-import binascii
 from binascii import a2b_base64
-import codecs
-from flask import Blueprint, flash, redirect, render_template, request, url_for
+from flask import Blueprint, flash, redirect, request, send_file, url_for
 from flask_login import current_user, login_required
 from io import BytesIO
-import os
 import re
 from werkzeug.datastructures import FileStorage
 
