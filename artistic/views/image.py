@@ -105,6 +105,7 @@ def style():
             user_id=current_user.id,
             width=width,
             height=height,
+            name=request.form['style_image_name'],
         )
 
     flash('Style image uploaded', 'success')
