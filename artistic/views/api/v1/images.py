@@ -39,8 +39,8 @@ def show(id):
 @authenticate_by_token
 def make_visible(id):
     image = Image.query.get(id)
-    image.visible = True
-    image.save
+    image.is_visible = True
+    image.save()
     msg = Message('Photo Complete', recipients=[image.user.email])
     link = f'{HTTP}://{BASE_URL}?starting_id={image.id}'
     msg.html = f'''
