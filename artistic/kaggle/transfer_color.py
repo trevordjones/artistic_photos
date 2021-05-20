@@ -25,10 +25,11 @@ def transfer_color(starting_image, palette, transfer_mapping, color_image_name):
     remaining_starting_hex = list(starting_hex_set - set([h[1] for h in transfer_mapping]))
     remaining_hex = list(hex_set - set([h[0] for h in transfer_mapping]))
     # iterate through remaining_hex -> this is num_palettes we'll use in algorithm
-    remaining_starting_hex_length = len(remaining_starting_hex) - 1
-    for hex in remaining_hex:
-        i = random.randint(0, remaining_starting_hex_length)
-        transfer_mapping.append([hex, remaining_starting_hex[i]])
+    if remaining_starting_hex:
+        remaining_starting_hex_length = len(remaining_starting_hex)
+        for hex in remaining_hex:
+            i = random.randint(0, remaining_starting_hex_length)
+            transfer_mapping.append([hex, remaining_starting_hex[i]])
     # mapped_palette should contain the index of palette
     # its length should be palette.hex_values - it may have duplicates
     hex_values = palette.hex_values
@@ -127,7 +128,7 @@ def transfer_color(starting_image, palette, transfer_mapping, color_image_name):
             download_blob = bucket.blob(starting_image_blob)
             download_blob.download_to_filename(starting_image_name)
 
-            num_palettes = len(palette_hex_values)
+            num_palettes = len(mapped_palette)
             image_size = 100
 
             # use the image to define `kmeans` - this will be used later to see which palette a pixel is assigned
