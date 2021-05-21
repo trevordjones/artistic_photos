@@ -11,3 +11,7 @@ class Base(db.Model):
         self.__dict__.update(kwargs)
         db.session.add(self)
         db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()

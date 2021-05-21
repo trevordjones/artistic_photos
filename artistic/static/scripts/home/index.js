@@ -40,6 +40,7 @@ var main = new Vue({
     nstOptions: [1, 2, 3, 4, 5],
     showNstOptions: false,
     showNstHelp: false,
+    showDeletePaletteModal: false,
   },
   updated() {
     if (this.showStartingImage) {
@@ -279,6 +280,26 @@ var main = new Vue({
 
         this.fromSelect = null;
       }
+    },
+    verifyDeletePalette: function(palette) {
+      this.showDeletePaletteModal = true;
+      this.deletedPalette = palette;
+    },
+    deletePalette: function() {
+      let index = this.palettes.indexOf(this.deletedPalette);
+      vm = this;
+      this.$http
+        .delete(`/api/v1/palettes/${vm.deletedPalette.id}`)
+        .then(() => {
+          vm.palettes.splice(index, 1);
+          vm.palette = {};
+          vm.showDeletePaletteModal = false;
+          vm.deletedPalette = null;
+        })
+    },
+    closeDeletePaletteModal: function() {
+      this.showDeletePaletteModal = false;
+      this.deletedPalette = null;
     }
   }
 })

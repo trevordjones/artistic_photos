@@ -22,8 +22,8 @@ def index():
     palettes = [palette.json() for palette in current_user.palettes]
     return {'palettes': palettes}
 
-@authenticate_by_token
 @palettes_bp.route('/api/v1/palettes', methods=['POST'])
+@login_required
 def create():
     palette = Palette(
         hex_values=request.json['hex_values'],
@@ -34,3 +34,11 @@ def create():
     palette.save()
     return {'palette': palette.json()}
 
+
+@palettes_bp.route('/api/v1/palettes/<id>', methods=['DELETE'])
+@login_required
+def delete(id):
+    palette = Palette.query.get(id)
+    palette.delete()
+
+    return {}, 200
