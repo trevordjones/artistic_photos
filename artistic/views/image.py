@@ -61,6 +61,7 @@ def artistic():
             width=width,
             height=height,
             starting_image_id=starting_image.id,
+            name=f'{starting_image.name}-{outline_image.source_name.split(".")[0]}'
             )
 
     hex_value_map = None
