@@ -86,6 +86,7 @@ var main = new Vue({
       this.showStyleImage = tabName == 'style';
       this.showPalette = tabName == 'palette';
       this.showEdit = tabName == 'edit';
+      window.history.replaceState(null, null, window.location.pathname);
     },
     setImageOnCanvas: function(imageUrl) {
       if (imageUrl) {
