@@ -42,7 +42,7 @@ def starting():
 def artistic():
     if not request.values['starting_id']:
         flash('No starting image selected', 'danger')
-        return redirect(url_for('home.main'))
+        return redirect(url_for('home.main', tab='edit'))
     starting_image = Image.query.get(request.values['starting_id'])
     outline_image = None
     style_image = None
@@ -86,9 +86,11 @@ def artistic():
 
     if resp.is_valid():
         flash(resp.msg, 'success')
+        tab = 'artistic'
     else:
         flash(resp.error, 'danger')
-    return redirect(url_for('home.main'))
+        tab = 'edit'
+    return redirect(url_for('home.main', tab=tab))
 
 @image_bp.route('/images/style', methods=['POST'])
 @login_required
@@ -108,4 +110,4 @@ def style():
         )
 
     flash('Style image uploaded', 'success')
-    return redirect(url_for('home.main'))
+    return redirect(url_for('home.main', tab='style'))

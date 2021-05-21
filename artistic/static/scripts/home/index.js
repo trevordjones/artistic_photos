@@ -70,6 +70,11 @@ var main = new Vue({
         })
     }
 
+    let tab = new URL(location.href).searchParams.get('tab');
+    if (tab != null) {
+      this.setTab(tab);
+    }
+
     this.$http
       .get('/api/v1/palettes')
       .then(response => this.palettes = response.body.palettes)

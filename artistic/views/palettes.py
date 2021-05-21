@@ -50,4 +50,4 @@ def create():
     else:
         flash('Please name your palette', 'danger')
 
-    return redirect(url_for('home.main'))
+    return redirect(url_for('home.main', tab='palette'))
