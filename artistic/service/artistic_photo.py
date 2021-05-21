@@ -51,7 +51,7 @@ class ArtisticPhoto:
 
     def create(self):
         resp = ArtisticPhotoResponse()
-        image = None
+        image = Image()
         if not self.starting_image:
             resp.error = 'Must include a starting image'
             return resp
@@ -93,7 +93,6 @@ class ArtisticPhoto:
                 )
                 resp.msg = 'Your black and white photo has been added'
 
-        image = Image()
         if KAGGLE_ENABLED:
             if action == ArtisticActions.NST:
                 if not self.style_image:
