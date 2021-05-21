@@ -14,7 +14,10 @@ palettes_bp = Blueprint('api.v1.palettes', __name__)
 @login_required
 def show_by_images(id):
     palette = Palette.query.filter_by(image_id=id).first()
-    return {'palette': palette.json()}
+    if palette:
+        return {'palette': palette.json()}
+    else:
+        return {}, 422
 
 @palettes_bp.route('/api/v1/palettes', methods=['GET'])
 @login_required

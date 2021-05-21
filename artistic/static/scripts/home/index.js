@@ -201,31 +201,43 @@ var main = new Vue({
     },
     togglePaletteMapping: function() {
       this.showPaletteMapping = !this.showPaletteMapping;
+      this.drawFromPalette();
       if (this.showPaletteMapping) {
         this.$http
           .get(`/api/v1/palettes/${this.image.id}/images`)
           .then((response) => {
             this.targetPalette = response.body.palette;
-            this.drawPalettes();
+            this.drawTargetPalette();
+          })
+          .catch(() => {
+            this.targetPalette = {}
+            this.targetHtmlHexes = null;
           })
       }
     },
-    drawPalettes: function() {
-      const width = 100 - this.palette.hex_values.length
-      this.fromHexWidth = width / this.palette.hex_values.length;
-      this.targetHexWidth = width / this.targetPalette.hex_values.length;
-      let html;
-      this.fromHtmlHexes = [];
-      this.palette.hex_values.forEach(hex => {
-        html = [`<span></span>`, hex];
-        this.fromHtmlHexes.push(html);
-      })
-
-      this.targetHtmlHexes = [];
-      this.targetPalette.hex_values.forEach(hex => {
-        html = ['<span></span>', hex];
-        this.targetHtmlHexes.push(html);
-      })
+    drawFromPalette: function() {
+      if (this.palette.hex_values) {
+        const width = 100 - this.palette.hex_values.length
+        this.fromHexWidth = width / this.palette.hex_values.length;
+        this.fromHtmlHexes = [];
+        let html;
+        this.palette.hex_values.forEach(hex => {
+          html = [`<span></span>`, hex];
+          this.fromHtmlHexes.push(html);
+        })
+      }
+    },
+    drawTargetPalette: function() {
+      const width = 100 - this.targetPalette.hex_values.length
+      if (this.targetPalette.hex_values) {
+        this.targetHexWidth = width / this.targetPalette.hex_values.length;
+        let html;
+        this.targetHtmlHexes = [];
+        this.targetPalette.hex_values.forEach(hex => {
+          html = ['<span></span>', hex];
+          this.targetHtmlHexes.push(html);
+        })
+      }
     },
     selectFrom: function(event, hex) {
       exit = false;
