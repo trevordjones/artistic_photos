@@ -76,9 +76,9 @@ var main = new Vue({
   },
   methods: {
     setTab: function(tabName) {
-      this.showArtisticImage = tabName == 'artisticImage';
-      this.showStartingImage = tabName == 'startingImage';
-      this.showStyleImage = tabName == 'styleImage';
+      this.showArtisticImage = tabName == 'artistic';
+      this.showStartingImage = tabName == 'starting';
+      this.showStyleImage = tabName == 'style';
       this.showPalette = tabName == 'palette';
       this.showEdit = tabName == 'edit';
     },
