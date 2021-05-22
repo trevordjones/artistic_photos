@@ -102,7 +102,7 @@ def nst(starting_image, style_name, source_name, option):
             STYLE_PATH = '-'.join(style_name.split('/'))
             CONTENT_PATH = '-'.join(content_name.split('/'))
             CHANNELS = 3
-            ITERATIONS = 1000
+            ITERATIONS = 2500
 
             width, height = keras.preprocessing.image.load_img(CONTENT_PATH).size
             img_width = 600

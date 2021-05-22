@@ -70,6 +70,7 @@ def artistic():
         hex_value_map = [v.split('-') for v in request.form['hex_values'].split(',')]
     if request.form['palette_id']:
         palette = Palette.query.get(request.form['palette_id'])
+    nst_option = request.form['nst-option'] if 'nst-option' in request.form else None
     resp, artistic_image = ArtisticPhoto(
         request.form['action'],
         starting_image,
@@ -78,7 +79,7 @@ def artistic():
         blur_range=request.form['blur-range'],
         hex_value_map=hex_value_map,
         palette=palette,
-        nst_option=request.form['nst-option'],
+        nst_option=nst_option,
         ).create()
     artistic_image.user_id = current_user.id
     artistic_image.name = request.form['artistic_name']
