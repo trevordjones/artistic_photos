@@ -76,3 +76,11 @@ def create():
     mail.send(msg)
 
     return {'image': image.json()}
+
+@images_bp.route('/api/v1/images/<id>', methods=['DELETE'])
+@login_required
+def delete(id):
+    image = Image.query.get(id)
+    image.delete()
+
+    return {}, 200

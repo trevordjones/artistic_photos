@@ -41,6 +41,8 @@ var main = new Vue({
     showNstOptions: false,
     showNstHelp: false,
     showDeletePaletteModal: false,
+    showDeleteImageModal: false,
+
   },
   updated() {
     if (this.showStartingImage) {
@@ -318,6 +320,29 @@ var main = new Vue({
     closeDeletePaletteModal: function() {
       this.showDeletePaletteModal = false;
       this.deletedPalette = null;
-    }
+    },
+    verifyDeleteImage: function(img){
+      this.showDeleteImageModal = true;
+      this.deletedImage = img;
+    },
+    deleteImage: function(){
+      let index = this.images.indexOf(this.deletedImage);
+      let artistic_index = this.artisticImages.indexOf(this.deletedImage);
+      vm = this;
+      this.$http
+        .delete(`/api/v1/images/${vm.deletedImage.id}`)
+        .then(() => {
+          vm.images.splice(index, 1);
+          vm.image = {};
+          vm.showDeleteImageModal = false;
+          vm.deletedImage = null;
+          vm.artisticImages.splice(artistic_index, 1);
+          vm.artisticImage = {};
+        })
+    },
+    closeDeleteImageModal: function() {
+      this.showDeleteImageModal = false;
+      this.deletedImage = null;
+    },
   }
 })
