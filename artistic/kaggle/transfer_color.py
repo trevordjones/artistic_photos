@@ -16,29 +16,24 @@ APP_URL = os.getenv('APP_URL')
 def transfer_color(starting_image, palette, transfer_mapping, color_image_name):
     # transfer_mapping[0] -> palette
     # transfer_mapping[1] -> starting_image.palette
-
-    # remove what is in transfer_mapping from their associated palettes
-    # pair up randomly whatever is left
-    # create sets
-    starting_hex_set = set(starting_image.palette.hex_values)
-    hex_set = set(palette.hex_values)
-    remaining_starting_hex = list(starting_hex_set - set([h[1] for h in transfer_mapping]))
-    remaining_hex = list(hex_set - set([h[0] for h in transfer_mapping]))
-    # iterate through remaining_hex -> this is num_palettes we'll use in algorithm
-    if remaining_starting_hex:
-        remaining_starting_hex_length = len(remaining_starting_hex)
-        for hex in remaining_hex:
-            i = random.randint(0, remaining_starting_hex_length)
-            transfer_mapping.append([hex, remaining_starting_hex[i]])
-    # mapped_palette should contain the index of palette
-    # its length should be palette.hex_values - it may have duplicates
-    hex_values = palette.hex_values
-    hex_values.sort()
-    transfer_mapping.sort(key=lambda hexes: hexes[0])
-    mapped_palette = []
+    mapped_palette = {}
     for hexes in transfer_mapping:
-        idx = starting_image.palette.hex_values.index(hexes[1])
-        mapped_palette.append(str(idx))
+        mapped_palette[hexes[1]] = hexes[0]
+
+    # exhaust palette - make sure each of it's values are taken
+    # not all hex_values are taken
+    leftover = list(set(palette.hex_values) - set(mapped_palette.keys()))
+    # assign each leftover to something in starting_image.palette.hex_values that hasn't been taken
+    starting_image_leftover = list(
+        set(starting_image.palette.hex_values) - set(mapped_palette.values())
+        )
+
+    for l in starting_image_leftover:
+        if not leftover:
+            leftover = palette.hex_values
+        leftover_hex = random.choice(leftover)
+        mapped_palette[l] = leftover_hex
+        leftover.remove(leftover_hex)
 
     kernel_metadata = {
         'id': f'{KAGGLE_USER}/297color-transfer',
@@ -60,7 +55,6 @@ def transfer_color(starting_image, palette, transfer_mapping, color_image_name):
     # set up variables
     palette_hex_values = ','.join(palette.hex_values)
     starting_image_hex_values = ','.join(starting_image.palette.hex_values)
-    mapped_palette = ','.join(mapped_palette)
     starting_image_blob = f'starting/{starting_image.source_name}'
     starting_image_name = starting_image.source_name
     bucket_name = BUCKET
@@ -94,6 +88,7 @@ def transfer_color(starting_image, palette, transfer_mapping, color_image_name):
             from kaggle_secrets import UserSecretsClient
             import cv2
             import requests
+            import ast
 
             user_secrets = UserSecretsClient()
             user_credential = user_secrets.get_gcloud_credential()
@@ -102,7 +97,8 @@ def transfer_color(starting_image, palette, transfer_mapping, color_image_name):
 
             palette_hex_values = "%s".split(',')
             starting_image_hex_values = "%s".split(',')
-            mapped_palette = [int(i) for i in "%s".split(',')]
+            # convert from string to dict
+            mapped_palette = ast.literal_eval("%s")
             palette = []
             # convert palette to rgb
             for hex_value in palette_hex_values:
@@ -128,7 +124,7 @@ def transfer_color(starting_image, palette, transfer_mapping, color_image_name):
             download_blob = bucket.blob(starting_image_blob)
             download_blob.download_to_filename(starting_image_name)
 
-            num_palettes = len(mapped_palette)
+            num_palettes = int("%s")
             image_size = 100
 
             # use the image to define `kmeans` - this will be used later to see which palette a pixel is assigned
@@ -140,24 +136,41 @@ def transfer_color(starting_image, palette, transfer_mapping, color_image_name):
             data = pd.DataFrame(reduced_image.reshape(-1, 3), columns=['R', 'G', 'B'])
             kmeans = KMeans(n_clusters=num_palettes, random_state=0)
             kmeans.fit_predict(data)
+            cluster_centers = kmeans.cluster_centers_
+            cluster_center_hexes = [to_hex(cc) for cc in cluster_centers]
 
             color_image = starting_image.copy()
             color_image = resize(color_image, (color_image.shape[0], color_image.shape[1]))
             for idx, i in enumerate(color_image):
                 for jdx, current_pixel in enumerate(i):
                     data = pd.DataFrame(current_pixel.reshape(-1, 3), columns=['R', 'G', 'B'])
-                    cluster = kmeans.predict(data)
-                    # cluster[0] represents the index of the starting_image_palette
-                    # use mapping to find rgb of palette
-                    palette_pixel = palette[mapped_palette[cluster[0]]]
-                    # get the percentage change of current_pixel and starting_image_palette[cluster[0]]
-                    starting_image_palette_pixel = starting_image_palette[cluster[0]]
-                    percentage = (np.sum(starting_image_palette_pixel) - np.sum(current_pixel))/np.sum(starting_image_palette_pixel)
+                    predicted = kmeans.predict(data)
+                    # predicted[0] represents the index of the cluster_centers
+
+                    # get the rgb of the predicted value
+                    predicted_rgb = cluster_centers[predicted[0]]
+                    cluster_hex = to_hex(predicted_rgb)
+
+                    # See which hex this value maps to in the palette. This is palette_pixel
+                    if cluster_hex in mapped_palette:
+                        if cluster_hex == mapped_palette[cluster_hex]:
+                            # keep the same
+                            palette_hex = to_hex(current_pixel)
+                        else:
+                            palette_hex = mapped_palette[cluster_hex]
+                    else:
+                        palette_hex = to_hex(current_pixel)
+
+                    palette_pixel = np.asarray(list(int(palette_hex[1:][i:i+2], 16) for i in (0, 2, 4))) / 255
+
+                    # Get the percentage of the current_pixel from the predicted_rgb
+                    percentage = (np.sum(predicted_rgb) - np.sum(current_pixel))/np.sum(predicted_rgb)
+                    # multiply this percentage by the palette_pixel
                     changed_pixel = palette_pixel + (palette_pixel * percentage)
                     color_image[idx][jdx] = changed_pixel
 
-            color_image = color_image * 255
-            color_image = np.asarray(color_image, dtype='float32')
+
+            color_image = np.asarray(color_image * 255, dtype='float32')
 
             color_image_name = "%s"
             # cv2 will reverse rgb when saving because it assumes the image is bgr
@@ -174,10 +187,11 @@ def transfer_color(starting_image, palette, transfer_mapping, color_image_name):
             ''' % (
                 palette_hex_values,
                 starting_image_hex_values,
-                mapped_palette,
+                str(mapped_palette),
                 starting_image_blob,
                 starting_image_name,
                 bucket_name,
+                len(starting_image.palette.hex_values),
                 color_image_name,
                 destination_blob_name,
                 app_url,
