@@ -106,3 +106,14 @@ class Image(Base):
             'height': self.height,
             'url': f'/artistic/static/img/{self.source_name}'
             }
+
+    def delete_from_gcp(self, blob_name):
+        try:
+            bucket_name = STORAGE_BUCKET
+            storage_client = storage.Client()
+            bucket = storage_client.bucket(bucket_name)
+            blob = bucket.blob(f'{self.subdirectory}/{blob_name}')
+            blob.delete()
+        except:
+            raise
+

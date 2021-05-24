@@ -81,6 +81,8 @@ def create():
 @login_required
 def delete(id):
     image = Image.query.get(id)
+    image_name = image.source_name
+    image.delete_from_gcp(image_name)
     image.delete()
 
     return {}, 200
