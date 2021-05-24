@@ -338,6 +338,7 @@ var main = new Vue({
           vm.deletedImage = null;
           vm.artisticImages.splice(artistic_index, 1);
           vm.artisticImage = {};
+          location.reload();
         })
     },
     closeDeleteImageModal: function() {
