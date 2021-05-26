@@ -18,6 +18,9 @@ class ArtisticActions(Enum):
     TRANSFER_COLOR = 'transfer_color'
 
 
+KAGGLE_ACTIONS = [ArtisticActions.NST, ArtisticActions.TRANSFER_COLOR]
+
+
 class ArtisticPhotoResponse:
     def __init__(self):
         self.error = None
@@ -100,7 +103,7 @@ class ArtisticPhoto:
                 )
                 resp.msg = 'Your black and white photo has been added'
 
-        if KAGGLE_ENABLED:
+        if KAGGLE_ENABLED and action in KAGGLE_ACTIONS:
             if action == ArtisticActions.NST:
                 if not self.style_image:
                     resp.error = 'Must select a style image'
