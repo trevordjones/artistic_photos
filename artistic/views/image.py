@@ -61,8 +61,12 @@ def artistic():
             width=width,
             height=height,
             starting_image_id=starting_image.id,
-            name=f'{starting_image.name}-{outline_image.source_name.split(".")[0]}'
+            name=f'{starting_image.name}-{outline_image.source_name.split(".")[0]}',
+            is_outline=True,
             )
+    elif starting_image.is_outline:
+        outline_image = starting_image
+        starting_image = outline_image.starting_image
 
     hex_value_map = None
     palette = None

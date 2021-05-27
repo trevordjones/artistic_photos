@@ -27,6 +27,7 @@ class Image(Base):
     height = db.Column(db.Integer)
     starting_image_id = db.Column(db.Integer, db.ForeignKey('images.id'))
     is_visible = db.Column(db.Boolean, server_default='true')
+    is_outline = db.Column(db.Boolean, server_default='false')
     starting_image = relationship('Image', remote_side=[id])
     artistic_images = relationship('Image', lazy='dynamic')
     palette = relationship('Palette', uselist=False, back_populates="image")
