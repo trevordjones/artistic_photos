@@ -42,6 +42,8 @@ var main = new Vue({
     showNstHelp: false,
     showDeletePaletteModal: false,
     showDeleteImageModal: false,
+    searchImages: [],
+    searchTerm: ""
 
   },
   updated() {
@@ -344,6 +346,16 @@ var main = new Vue({
     closeDeleteImageModal: function() {
       this.showDeleteImageModal = false;
       this.deletedImage = null;
+    },
+    searchImage: function(input) {
+      this.searchImages = [];
+      this.searchTerm = input;
+        for(i=0; i<this.images.length; i++){
+          console.log(this.images[i])
+          if(this.images[i].name.toLowerCase().startsWith(this.searchTerm) && this.searchTerm){
+            this.searchImages.push(this.images[i])
+          }
+        }
     },
   }
 })
