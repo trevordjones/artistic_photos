@@ -53,21 +53,7 @@
 	padding: 5px;
 	border-radius: 5px;
 	display: flex;
-  margin-left: 320px;
   
-}
-
-.search_box .search_btn{
-	width: 50px;
-	height: 50px;
-	border-radius: 50%;
-	background: #b19eff;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	color: #fff;
-	margin-right: 15px;
-	cursor: pointer;
 }
 
 .search_box .input_search{
@@ -85,16 +71,4 @@
   color: #fff;
 }
 
-.dropdown {
-  position: relative;
-  display: inline-block;
-  margin-left: 400px;
-  height: 125px;
-  overflow-y:scroll;
-  width: 300px;
-}
-
-.dropdown li:hover {
-  background-color: #ddd;
-}
 

@@ -61,6 +61,7 @@ var main = new Vue({
       .get('/api/v1/images')
       .then((response) => {
         this.images = response.body.images
+        this.searchImages = response.body.images
         this.filterImages();
       })
     let id = new URL(location.href).searchParams.get('starting');
@@ -350,12 +351,15 @@ var main = new Vue({
     searchImage: function(input) {
       this.searchImages = [];
       this.searchTerm = input;
-        for(i=0; i<this.images.length; i++){
-          console.log(this.images[i])
-          if(this.images[i].name.toLowerCase().startsWith(this.searchTerm) && this.searchTerm){
-            this.searchImages.push(this.images[i])
+      if(!this.searchTerm.length){
+        this.searchImages = this.images;
+      } else{
+          for(i=0; i<this.images.length; i++){
+            if(this.images[i].name.toLowerCase().startsWith(this.searchTerm)){
+              this.searchImages.push(this.images[i])
           }
         }
+      }
     },
   }
 })
