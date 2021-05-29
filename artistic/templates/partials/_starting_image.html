@@ -12,6 +12,8 @@
           v-on:mouseup="unsetDrag"
         >
         </canvas>
+        <button v-if="image.name != null" v-on:click="undo">Undo</button>
+        <button v-if="image.name != null" v-on:click="redo">Redo</button>
       </div>
       <div class="col-sm-4">
         <div v-bind:style="{width: '18rem', height: cardHeight() + 'rem', 'overflow-y': 'auto'}">

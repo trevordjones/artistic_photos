@@ -42,6 +42,8 @@ var main = new Vue({
     showNstHelp: false,
     showDeletePaletteModal: false,
     showDeleteImageModal: false,
+    redoList: [],
+    undoList: [],
 
   },
   updated() {
@@ -109,6 +111,7 @@ var main = new Vue({
       }
 
       img.src = this.canvasImageUrl;
+      this.saveState(this.canvas);
     },
     cardHeight: function() {
       if (this.images.length > 8) {
@@ -345,5 +348,35 @@ var main = new Vue({
       this.showDeleteImageModal = false;
       this.deletedImage = null;
     },
+    saveState: function(canvas, list, keep_redo) {
+      keep_redo = keep_redo || false;
+      if(!keep_redo) {
+        this.redoList = [];
+      }
+      (list || this.undoList).push(canvas.toDataURL());  
+      console.log(this.undoList); 
+    },
+    undo: function() {
+      this.restoreState(this.canvas, this.canvasCtx, this.undoList, this.redoList);
+    },
+    redo: function() {
+      this.restoreState(this.canvas, this.canvasCtx, this.redoList, this.undoList);
+    },
+    restoreState: function(canvas, ctx,  pop, push) {
+      if(pop.length) {
+        this.saveState(canvas, push, true);
+        var restore_state = pop.pop();
+        var img = new Image();
+        img.src = restore_state;
+        const vm = this;
+        img.onload = function() {
+          vm.canvasCtx.clearRect(0, 0, vm.width, vm.height);
+          vm.canvasCtx.drawImage(img, 0, 0, vm.width, vm.height);
+          vm.canvasCtx.strokeStyle = 'red';
+          vm.canvasCtx.lineWidth = 5;
+          vm.canvasCtx.lineCap = 'round';  
+        }
+      }
+    }
   }
 })
