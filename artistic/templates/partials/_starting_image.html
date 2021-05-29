@@ -14,10 +14,13 @@
         </canvas>
       </div>
       <div class="col-sm-4">
+        <div class="search_box">
+          <input class="input_search" placeholder="Search for an image" @input="searchImage($event.target.value)">
+        </div>
         <div v-bind:style="{width: '18rem', height: cardHeight() + 'rem', 'overflow-y': 'auto'}">
           <ul class="list-group list-group-flush">
             <li
-              v-for="(img, index) in images"
+              v-for="(img, index) in searchImages"
               class="list-group-item"
               v-bind:class="{active: img.id == image.id, 'custom-list-group-item': img.id != image.id}"
               v-on:click="selectStartingPhoto(img)"
@@ -45,27 +48,6 @@
 
         <input type="submit" value="Create Starting Photo" id="submit" class="btn btn-dark" />
       </form>
-      <div class="wrapper">
-        <div class="search_box">
-          <div class="search_btn">
-            <i class="fas fa-search"></i>
-          </div>
-          <input class="input_search" placeholder="Search for an image" @input="searchImage($event.target.value)">
-            
-        </div>
-        <div class="dropdown" v-if="searchImages.length > 0">
-          
-          <ul class="list-group list-group-flush">
-            <li
-              v-for="(img, index) in searchImages"
-              class="list-group-item"
-              v-bind:class="{active: img.id == image.id, 'custom-list-group-item': img.id != image.id}"
-              v-on:click="selectStartingPhoto(img)">
-              [[img.name]]
-            </li>
-          </ul>
-        </div>
-      </div>
     </div>
   </div>
 </div>
