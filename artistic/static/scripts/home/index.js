@@ -350,7 +350,7 @@ var main = new Vue({
     },
     searchImage: function(input) {
       this.searchImages = [];
-      this.searchTerm = input;
+      this.searchTerm = input.toLowerCase();
       if(!this.searchTerm.length){
         this.searchImages = this.images;
       } else{
