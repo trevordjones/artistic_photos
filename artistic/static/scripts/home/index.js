@@ -42,6 +42,8 @@ var main = new Vue({
     showNstHelp: false,
     showDeletePaletteModal: false,
     showDeleteImageModal: false,
+    searchImages: [],
+    searchTerm: ""
 
   },
   updated() {
@@ -59,6 +61,7 @@ var main = new Vue({
       .get('/api/v1/images')
       .then((response) => {
         this.images = response.body.images
+        this.searchImages = response.body.images
         this.filterImages();
       })
     let id = new URL(location.href).searchParams.get('starting');
@@ -344,6 +347,19 @@ var main = new Vue({
     closeDeleteImageModal: function() {
       this.showDeleteImageModal = false;
       this.deletedImage = null;
+    },
+    searchImage: function(input) {
+      this.searchImages = [];
+      this.searchTerm = input.toLowerCase();
+      if(!this.searchTerm.length){
+        this.searchImages = this.images;
+      } else{
+          for(i=0; i<this.images.length; i++){
+            if(this.images[i].name.toLowerCase().startsWith(this.searchTerm)){
+              this.searchImages.push(this.images[i])
+          }
+        }
+      }
     },
   }
 })
